@@ -30,7 +30,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             CategorySeeder::class,
-            SubcategorySeeder::class,
             ProductConditionSeeder::class
         ]);
         Store::factory(1)->create();

@@ -26,7 +26,7 @@
                          {{ $message }}
                        </div>
                        @enderror
-                     </div>
+                    </div>
 
                     <div class="mb-3">
                         <label class="mb-2 text-muted" for="name">Name</label>

@@ -18,14 +18,12 @@ return new class extends Migration
             $table->unsignedBigInteger('price');
             $table->unsignedInteger('stock');
             $table->unsignedBigInteger('category_id');
-            $table->unsignedBigInteger('subcategory_id');
             $table->unsignedBigInteger('condition_id');
             $table->unsignedBigInteger('store_id');
             // $table->foreignId('category_id')->constrained();
             // $table->foreignId('subcategory_id')->constrained();
             // $table->foreignId('condition_id')->constrained();
             // $table->foreignId('store_id')->constrained();
-            $table->unsignedBigInteger('image_id')->nullable(true);
             $table->timestamps();
         });
     }

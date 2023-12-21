@@ -10,5 +10,5 @@
             @endif
         </div>
     </div>
-    {{ $store }}
+    {{ $user->store }}
 @endsection

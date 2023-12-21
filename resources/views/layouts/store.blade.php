@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
     {{-- CSS --}}
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link href="{{ asset('css/main.css') }}" rel="stylesheet" type="text/css">
     {{-- Icon --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
 </head>
@@ -24,12 +25,12 @@
         <div class="dropdown text-end">
             <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                 @if ($user->store) 
-                @if ($store->image)
-                <img src="{{ asset('storage/'.$store->image->url) }}" alt="mdo" width="32" height="32" class="rounded-circle border border-dark">
+                @if ($user->store->image)
+                <img src="{{ asset('storage/'.$user->store->image->url) }}" alt="mdo" width="32" height="32" class="rounded-circle border border-dark">
                 @else
                 <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt="mdo" width="32" height="32" class="rounded-circle border border-dark">           
                 @endif
-                {{ $store->name }}
+                {{ $user->store->name }}
                 @endif
               </a>
             <ul class="dropdown-menu text-small">
@@ -60,9 +61,9 @@
                           <i class='bx bx-grid-alt nav_icon'></i> 
                           <span class="nav_name">Dashboard</span> 
                       </a> 
-                      <a href="" class="nav_link "> 
-                          <i class='bx bx-user nav_icon'></i> 
-                          <span class="nav_name">Category</span> 
+                      <a href="{{ route('products.index') }}" class="nav_link {{ Route::is('products*') ? 'active' : '' }}">  
+                          <i class='bx bx-package nav_icon'></i> 
+                          <span class="nav_name">Products</span> 
                       </a> 
                       <a href="" class="nav_link "> 
                           <i class='bx bx-message-square-detail nav_icon'></i> 
@@ -97,6 +98,7 @@
     <!--Container Main end-->
 
     {{-- JavaScript --}}
+    <script src="{{ asset('js/multiple-uploader.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
     {{-- Bootstrap --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>

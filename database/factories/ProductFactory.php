@@ -22,7 +22,6 @@ class ProductFactory extends Factory
             'price'=>mt_rand(10000,999999),
             'stock'=>mt_rand(0,100),
             'category_id'=>mt_rand(1,20),
-            'subcategory_id'=>mt_rand(1,20),
             'condition_id'=>mt_rand(1,2),
             'store_id'=>1,
         ];

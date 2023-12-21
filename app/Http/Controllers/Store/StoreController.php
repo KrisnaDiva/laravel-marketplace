@@ -21,8 +21,7 @@ class StoreController extends Controller
      */
     public function index():View{
         return view('store.index',[
-            'user'=>$this->user->getUser(),
-            'store'=>$this->storeService->getStore($this->user->getUser()->store->id)
+            'user'=>$this->user->getUser()
         ]);
     }
     

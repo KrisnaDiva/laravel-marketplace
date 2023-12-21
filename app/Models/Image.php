@@ -16,4 +16,8 @@ class Image extends Model
     public function store():BelongsTo{
         return $this->belongsTo(Store::class);
     }
+    public function products()
+    {
+        return $this->belongsToMany(Product::class,'product_images')->withPivot(["created_at","updated_at"]);
+    }
 }
