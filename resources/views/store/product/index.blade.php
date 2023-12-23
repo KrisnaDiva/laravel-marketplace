@@ -41,12 +41,13 @@
                                 <td>{{ $product->price }}</td>
                                 <td>{{ $product->stock }}</td>
                                 <td class="d-flex">
-                                    <a href="{{ route('products.edit',$product->id) }}" class="btn btn-warning me-2">Edit</a>
+                                    <a href="{{ route('products.edit',$product->id) }}" class="btn btn-warning mx-2">Edit</a>
                                     <form action="{{ route('products.destroy',$product->id) }}" method="POST">
                                         @method('delete')
                                         @csrf
                                         <button type="submit" class="btn btn-danger">Delete</button>
                                     </form>
+                                    <a href="{{ route('products.show',$product->id) }}" class="btn btn-success mx-2">show</a>
                                 </td>
                               </tr>
                             @endforeach

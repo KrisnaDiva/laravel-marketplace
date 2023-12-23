@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Store\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,6 +25,7 @@ Route::middleware(['auth','verified'])->group(function(){
     });    
         Route::patch('/update-password',[PasswordController::class,'update'])->name('password.update');
         Route::get('/',[DashboardController::class,'index'])->name('dashboard');
+        Route::get('/products/{product}',[ProductController::class,'show'])->name('products.show');
 });
 
 require __DIR__.'/auth.php';

@@ -58,7 +58,10 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return view('store.product.show',[
+            'user'=>$this->user->getUser(),
+            'product'=>$this->productService->getProduct($id),
+        ]);
     }
 
     /**

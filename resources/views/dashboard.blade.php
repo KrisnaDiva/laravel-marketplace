@@ -11,8 +11,9 @@
             <div class="card-body p-4">
                 {{ $product->name }}
             </div>
-            <div class="card-footer py-3 border-0">
-                {{ $product->price }}
+            <div class="card-footer py-3 border-0 d-flex justify-content-between">
+               <p>{{ $product->price }}</p> 
+                <a href="{{ route('products.show',$product->id) }}" class="btn btn-success">Show</a>
             </div>
         </div>
     </div>   

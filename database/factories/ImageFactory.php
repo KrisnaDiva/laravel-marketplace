@@ -17,7 +17,7 @@ class ImageFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'url'=>$this->faker->image(storage_path('app\public\images\product-image'), 640, 480)
         ];
     }
 }
