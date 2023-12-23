@@ -11,7 +11,7 @@
         </div>          
     </div>
     <div class="row justify-content-center">
-        <div class="col-8">
+        <div class="col-10">
             <div class="card">
                 <div class="card-header">
                     Products
@@ -40,7 +40,8 @@
                                 <td>{{ $product->name }}</td>
                                 <td>{{ $product->price }}</td>
                                 <td>{{ $product->stock }}</td>
-                                <td>
+                                <td class="d-flex">
+                                    <a href="{{ route('products.edit',$product->id) }}" class="btn btn-warning me-2">Edit</a>
                                     <form action="{{ route('products.destroy',$product->id) }}" method="POST">
                                         @method('delete')
                                         @csrf

@@ -29,7 +29,6 @@ class ProductService{
                 $product->images()->attach($image->id);
             }
             DB::commit();
-            return $product;
         } catch (QueryException $error) {
             DB::rollBack();
         }  
@@ -39,7 +38,22 @@ class ProductService{
     public function getProduct($id){
         return $this->productRepository->find($id);
     }
-    public function updateProduct($id,array $data){     
+    public function updateProduct($id,array $data){    
+        $product = $this->getProduct($id);
+        try {
+            DB::beginTransaction();
+            $this->productRepository->update($id,$data);
+            if(isset($data['image'])){
+                for($i=0;$i<count($data['image']);$i++){
+                    $imagePath = $data["image"][$i]->store('images/product-image');
+                    $image = Image::create(['url' => $imagePath]);
+                    $product->images()->attach($image->id);
+                }         
+            }
+            DB::commit();
+        } catch (QueryException $error) {
+            DB::rollBack();
+        }      
         return $this->productRepository->update($id,$data);
     }
     public function deleteProduct($id)
