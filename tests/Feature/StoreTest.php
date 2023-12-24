@@ -28,7 +28,7 @@ class StoreTest extends TestCase
             'name'=>'inu',
             'address'=>'enog'
         ])
-        ->assertRedirect('/store')->assertStatus(302);;
+        ->assertRedirect('/store')->assertStatus(302);
     }
     public function testHasStore()
     {
@@ -37,6 +37,15 @@ class StoreTest extends TestCase
         $this->actingAs($user);
     
         $this->get('/store')->assertStatus(200);
+
+    }   
+    public function testProduct()
+    {
+        $user = User::factory()->create();
+        Store::factory()->create(['user_id' => $user->id]);
+        $this->actingAs($user);
+    
+        $this->get('/store/products')->assertStatus(200);
 
     }
     public function testEditStore()

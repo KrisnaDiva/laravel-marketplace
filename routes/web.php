@@ -27,8 +27,6 @@ Route::middleware(['auth','verified'])->group(function(){
         Route::patch('/update-password',[PasswordController::class,'update'])->name('password.update');
         Route::get('/',[DashboardController::class,'index'])->name('dashboard');
         Route::get('/products/{product}',[ProductController::class,'show'])->name('products.show');
-        Route::post('/wishlists',[WishlistController::class,'store'])->name('wishlists.store');
-        Route::delete('/wishlists/{product}',[WishlistController::class,'destroy'])->name('wishlists.destroy');
 });
 
 require __DIR__.'/auth.php';

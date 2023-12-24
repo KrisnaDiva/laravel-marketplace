@@ -24,20 +24,7 @@
                 <div class="image-container">
                     <div class="first">
                         <div class="d-flex justify-content-between align-items-center"> <span class="discount">-25%</span> 
-                            @if ($product->wishlists->isEmpty())   
-                            <form action="{{ route('wishlists.store') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}" readonly>
-                                <button class="wishlist"><i class="fa fa-heart-o"></i></button>
-                            </form>                           
-                            @else
-                            <form action="{{ route('wishlists.destroy',$product->id) }}" method="POST">
-                                @method('delete')
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}" readonly>
-                                <button class="wishlist"><i class="fa fa-heart text-danger"></i></button>
-                            </form>  
-                            @endif
+                           
                             {{-- <span class="wishlist"><i class="fa fa-heart-o"></i></span>  --}}
                         </div>
                     </div> <img src="{{ asset('storage/' . $product->images->first()->url) }}" class="img-fluid rounded thumbnail-image">

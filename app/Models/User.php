@@ -52,7 +52,4 @@ class User extends Authenticatable implements MustVerifyEmail
     public function image():HasOne{
         return $this->hasOne(Image::class,'id', 'image_id');
     }
-    public function wishlists(){
-        return $this->belongsToMany(Product::class,'wishlists')->withPivot(["created_at","updated_at"]);
-    }
 }
