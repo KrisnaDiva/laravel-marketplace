@@ -63,6 +63,9 @@
             </div>
         </div>
     </div>
+@section('script')
+    <script src="{{ asset('js/product.js') }}"></script>
+
     <script>
         function handleInputChange() {
             var inputElement = document.getElementById("quantity");
@@ -73,4 +76,5 @@
             }
         }
     </script>
+    @endsection
 @endsection

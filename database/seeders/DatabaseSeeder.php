@@ -4,11 +4,12 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\Product;
+
 use App\Models\Store;
 use App\Models\User;
+use Faker\Factory;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -18,8 +19,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        File::deleteDirectory(public_path('images/product-images'));
         // \App\Models\User::factory(10)->create();
-
+        $faker = Factory ::create();
         User::create([
             'name' => 'krisna',
             'email' => 'krisnadiva04@gmail.com',
@@ -30,9 +32,11 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             CategorySeeder::class,
-            ProductConditionSeeder::class
+            ProductConditionSeeder::class,
+            ProductSeeder::class
         ]);
+
+
         Store::factory(1)->create();
-        Product::factory(20)->create();
     }
 }

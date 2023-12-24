@@ -24,4 +24,7 @@ class Product extends Model
     {
         return $this->belongsToMany(Image::class,'product_images')->withPivot(["created_at","updated_at"]);
     }
+    public function wishlists(){
+        return $this->belongsToMany(User::class,'wishlists')->withPivot(["created_at","updated_at"]);
+    }
 }

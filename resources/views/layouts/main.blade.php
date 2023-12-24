@@ -7,7 +7,4 @@
     <div class="container">
         @yield('container')
     </div>
-    @section('script')
-        <script src="{{ asset('js/product.js') }}"></script>
-    @endsection
 @endsection
