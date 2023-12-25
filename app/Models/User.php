@@ -52,4 +52,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function image():HasOne{
         return $this->hasOne(Image::class,'id', 'image_id');
     }
+    public function cart():HasOne{
+        return $this->hasOne(Cart::class);
+    }
 }

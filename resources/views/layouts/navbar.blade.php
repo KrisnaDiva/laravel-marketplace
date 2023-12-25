@@ -1,6 +1,7 @@
 <header class="p-3 mb-3 border-bottom">
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        
         <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
           <img src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo.svg" alt="logo" width="40">
         </a>
@@ -10,6 +11,17 @@
           {{-- <li><a href="#" class="nav-link px-2 link-body-emphasis">Inventory</a></li> --}}
         </ul>
 
+        <div class="mx-5">
+          <a href="{{ route('cart.index') }}" class="text-dark">
+          <i class="fa fa-shopping-cart">
+              @if ($user->cart && $user->cart->cartItems->isNotEmpty())
+                  <sup class="text-danger">{{ $user->cart->cartItems->count() }}</sup>
+              @endif
+          </i>
+          </a>
+      </div>
+      
+      
 
         <div class="dropdown text-end">
           <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">

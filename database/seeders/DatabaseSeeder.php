@@ -19,21 +19,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        File::deleteDirectory(public_path('images/product-images'));
-        // \App\Models\User::factory(10)->create();
-        $faker = Factory ::create();
-        User::create([
-            'name' => 'krisna',
-            'email' => 'krisnadiva04@gmail.com',
-            'phone_number'=>'089658444101',
-            'email_verified_at'=>now(),
-            'password'=>Hash::make('12345678'),
-        ]);
+
 
         $this->call([
+            UserSeeder::class,
             CategorySeeder::class,
             ProductConditionSeeder::class,
-            ProductSeeder::class
+            ProductSeeder::class,
+            CartSeeder::class,
+            CartItemSeeder::class
         ]);
 
 

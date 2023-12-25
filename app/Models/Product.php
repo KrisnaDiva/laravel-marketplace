@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Product extends Model
 {
@@ -23,6 +24,9 @@ class Product extends Model
     public function images()
     {
         return $this->belongsToMany(Image::class,'product_images')->withPivot(["created_at","updated_at"]);
+    }
+    public function cart():HasOne{
+        return $this->hasOne(Cart::class);
     }
   
 }
