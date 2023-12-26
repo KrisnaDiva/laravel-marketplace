@@ -7,7 +7,9 @@ use App\Models\CartItem;
 use App\Repositories\UserRepository;
 use App\Services\ProductService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
@@ -36,36 +38,42 @@ class CartController extends Controller
      */
     public function store(Request $request,$id)
     {
-        $user=$this->user->getUser();
-        $product=$this->productService->getProduct($id);
-        if(!$user->cart){
-            $cart=Cart::create([
-                'user_id'=>$user->id
-            ]);
-        }else{
-            $cart=$user->cart;
-        }
-        $cartItem=CartItem::where('cart_id',$cart->id)->where('product_id',$product->id)->first();
-        $request->validate([
-            'quantity'=>'required',
-        ]);
-        if($cartItem){
-            if(($request->quantity+$cartItem->quantity)>$product->stock){
-                return back()->with('error',"
-                There are $product->stock left in stock for this item and you already have $cartItem->quantity in your basket.");
-            }
-                $cartItem->update([
-                'quantity'=>$request->quantity+$cartItem->quantity,
+        try{
+            DB::beginTransaction();
+            $user=$this->user->getUser();
+            $product=$this->productService->getProduct($id);
+            if(!$user->cart){
+                $cart=Cart::create([
+                    'user_id'=>$user->id
                 ]);
-        }else{
-            CartItem::create([
-                'cart_id'=>$cart->id,
-                'product_id'=>$product->id,
-                'quantity'=>$request->quantity,
+            }else{
+                $cart=$user->cart;
+            }
+            $cartItem=CartItem::where('cart_id',$cart->id)->where('product_id',$product->id)->first();
+            $request->validate([
+                'quantity'=>'required',
             ]);
-        }
+            if($cartItem){
+                if(($request->quantity+$cartItem->quantity)>$product->stock){
+                    return back()->with('error',"
+                    There are $product->stock left in stock for this item and you already have $cartItem->quantity in your basket.");
+                }
+                    $cartItem->update([
+                    'quantity'=>$request->quantity+$cartItem->quantity,
+                    ]);
+            }else{
+                CartItem::create([
+                    'cart_id'=>$cart->id,
+                    'product_id'=>$product->id,
+                    'quantity'=>$request->quantity,
+                ]);
+            }
+            DB::commit();
+            return back()->with('success','add to cart success!');
+        }catch(QueryException $e){
+            DB::rollBack();
+        }   
         
-        return back()->with('success','add to cart success!');
     }
 
     /**
