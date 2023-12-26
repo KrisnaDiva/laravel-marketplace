@@ -58,30 +58,29 @@ class CartItemController extends Controller
     public function increment(Request $request, CartItem $cartItem)
     {
         $this->authorize('delete',$cartItem);
+        
         $quantity=$cartItem->quantity;
         $product=$cartItem->product;
+        if((1+$cartItem->quantity)>$product->stock){
+            return session()->flash('error',"
+            There are $product->stock left in stock for this item and you already have $cartItem->quantity in your basket.");
+        }
         $cartItem->quantity=$quantity+1;
         $cartItem->save();
-        $cartItem->price=$cartItem->quantity*$product->price;
-        $cartItem->save();
-        $cart=Cart::find($cartItem->cart_id);
-        $cart->total_price=$cart->cartItems()->sum('price');
-        $cart->save();
-        session()->flash('success','1 product has been updated.');
+        return session()->flash('success','1 product has been updated.');
     }
     public function decrement(Request $request, CartItem $cartItem)
     {
         $this->authorize('delete',$cartItem);
         $quantity=$cartItem->quantity;
         $product=$cartItem->product;
+        if(($cartItem->quantity-1)==0){
+            return session()->flash('error',"
+            There are $product->stock left in stock for this item and you already have $cartItem->quantity in your basket.");
+        }
         $cartItem->quantity=$quantity-1;
         $cartItem->save();
-        $cartItem->price=$cartItem->quantity*$product->price;
-        $cartItem->save();
-        $cart=Cart::find($cartItem->cart_id);
-        $cart->total_price=$cart->cartItems()->sum('price');
-        $cart->save();
-        session()->flash('success','1 product has been updated.');
+        return session()->flash('success','1 product has been updated.');
     }
 
     /**
@@ -91,9 +90,6 @@ class CartItemController extends Controller
     {
         $this->authorize('delete',$cartItem);
         $cartItem->delete();
-        $cart=Cart::find($cartItem->cart_id);
-        $cart->total_price=$cart->cartItems()->sum('price');
-        $cart->save();
         session()->flash('success','1 product has been removed.');
     }
 }

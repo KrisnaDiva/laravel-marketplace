@@ -21,24 +21,16 @@ class CartItemSeeder extends Seeder
                 'product_id'=>mt_rand(1,5),
                 'quantity'=>mt_rand(1,5),
             ]);
-            $product=Product::find($cartItem->product_id);
-            $productPrice=$product->price;
-            $cartItem->price=($productPrice*$cartItem->quantity);
-            $cartItem->save();
+
     
             $cartItem=CartItem::create([
                 'cart_id'=>$i,
                 'product_id'=>mt_rand(6,10),
                 'quantity'=>mt_rand(1,5),
             ]);
-            $product=Product::find($cartItem->product_id);
-            $productPrice=$product->price;
-            $cartItem->price=($productPrice*$cartItem->quantity);
-            $cartItem->save();
-    
-            $cart=Cart::find($cartItem->cart_id);
-            $cart->total_price=$cart->cartItems()->sum('price');
-            $cart->save();
+
+
+
         }
         
     }

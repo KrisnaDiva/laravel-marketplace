@@ -71,7 +71,11 @@
                                         <label class="col-sm-4 col-form-label text-muted">{{ $product->stock }} left</label>
                                     </div>
                                     <div class="cart mt-4 align-items-center">
+                                        @if ($product->stock == 0)
+                                        <button class="btn btn-muted text-uppercase mr-2 px-4" >Add to cart</button> 
+                                        @else
                                         <button class="btn btn-danger text-uppercase mr-2 px-4" type="submit">Add to cart</button> 
+                                        @endif
                                     </div>
                                 </form>
                                 <div class="cart mt-4 align-items-center">

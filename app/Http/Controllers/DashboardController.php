@@ -16,7 +16,7 @@ class DashboardController extends Controller
         $user=$this->user->getUser();
         return response()->view('dashboard',[
             'user'=>$user,
-            'products'=>$this->productService->getAllProduct(),
+            'products'=>$this->productService->getAllReadyStockProduct(),
         ]);
     }
 }

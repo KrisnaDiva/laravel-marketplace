@@ -15,6 +15,9 @@ class ProductService{
     public function getAllProduct(){
         return $this->productRepository->all();
     }
+    public function getAllReadyStockProduct(){
+        return $this->productRepository->allReadyStock();
+    }
     public function getPaginateProduct($perPage=10){
         return $this->productRepository->paginate($perPage);
     }

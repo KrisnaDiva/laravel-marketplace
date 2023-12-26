@@ -74,7 +74,7 @@
 
                 <div class="mb-3">
                     <label class="mb-2 text-muted" for="price">Price</label>
-                    <input id="price" type="number" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ old('price') }}" required>
+                    <input id="price" type="number" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ old('price') }}" min="99" required>
                     @error('price')
                     <div class="invalid-feedback">
                         {{ $message }}
@@ -83,7 +83,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="mb-2 text-muted" for="stock">Stock</label>
-                    <input id="stock" type="number" class="form-control @error('stock') is-invalid @enderror" name="stock" value="{{ old('stock') }}" required>
+                    <input id="stock" type="number" class="form-control @error('stock') is-invalid @enderror" name="stock" value="{{ old('stock') }}" min="0" required>
                     @error('stock')
                     <div class="invalid-feedback">
                         {{ $message }}
@@ -91,8 +91,8 @@
                 @enderror
                 </div>
                 <div class="mb-3">
-                    <label class="mb-2 text-muted" for="weight">Weight</label>
-                    <input id="weight" type="number" class="form-control @error('weight') is-invalid @enderror" name="weight" value="{{ old('weight') }}" required>
+                    <label class="mb-2 text-muted" for="weight">Weight (gram)</label>
+                    <input id="weight" type="number" class="form-control @error('weight') is-invalid @enderror" name="weight" value="{{ old('weight') }}" min="1" required>
                     @error('weight')
                     <div class="invalid-feedback">
                         {{ $message }}

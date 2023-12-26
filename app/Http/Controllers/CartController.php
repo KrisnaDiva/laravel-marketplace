@@ -20,7 +20,6 @@ class CartController extends Controller
         $user=$this->user->getUser();
         return view('cart',[
             'user'=>$user,
-            'cart_items'=>$user->cart->cartItems
         ]);
     }
 
@@ -39,8 +38,14 @@ class CartController extends Controller
     {
         $user=$this->user->getUser();
         $product=$this->productService->getProduct($id);
-        $cart=$user->cart;
-        $cartItem=CartItem::where('cart_id',$user->cart->id)->where('product_id',$product->id)->first();
+        if(!$user->cart){
+            $cart=Cart::create([
+                'user_id'=>$user->id
+            ]);
+        }else{
+            $cart=$user->cart;
+        }
+        $cartItem=CartItem::where('cart_id',$cart->id)->where('product_id',$product->id)->first();
         $request->validate([
             'quantity'=>'required',
         ]);
@@ -51,18 +56,14 @@ class CartController extends Controller
             }
                 $cartItem->update([
                 'quantity'=>$request->quantity+$cartItem->quantity,
-                'price'=>($product->price*($request->quantity+$cartItem->quantity))
                 ]);
         }else{
             CartItem::create([
                 'cart_id'=>$cart->id,
                 'product_id'=>$product->id,
                 'quantity'=>$request->quantity,
-                'price'=>($product->price*$request->quantity)
             ]);
         }
-        $cart->total_price=$cart->cartItems()->sum('price');
-        $cart->save();
         
         return back()->with('success','add to cart success!');
     }
