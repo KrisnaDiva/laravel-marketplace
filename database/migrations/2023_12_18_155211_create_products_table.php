@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('description');
             $table->unsignedBigInteger('price');
             $table->unsignedInteger('stock');
+            $table->unsignedInteger('weight');
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('condition_id');
             $table->unsignedBigInteger('store_id');

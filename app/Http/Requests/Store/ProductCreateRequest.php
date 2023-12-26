@@ -29,6 +29,7 @@ class ProductCreateRequest extends FormRequest
             'condition_id'=>['required',Rule::notIn([0]),'integer'],
             'price'=>['required','integer','min:99','max:150000000'],
             'stock'=>['required','integer'],
+            'weight'=>['required','integer'],
             'image'=>['required']
         ];
     }

@@ -25,6 +25,7 @@
                             <th>Name</th>
                             <th>Price</th>
                             <th>Stock</th>
+                            <th>Weight (gram)</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -40,6 +41,7 @@
                                 <td>{{ $product->name }}</td>
                                 <td>{{ $product->price }}</td>
                                 <td>{{ $product->stock }}</td>
+                                <td>{{ $product->weight }}</td>
                                 <td class="d-flex">
                                     <a href="{{ route('products.edit',$product->id) }}" class="btn btn-warning mx-2">Edit</a>
                                     <form action="{{ route('products.destroy',$product->id) }}" method="POST">
