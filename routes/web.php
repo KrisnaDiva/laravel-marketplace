@@ -6,7 +6,9 @@ use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Store\ProductController;
+use App\Http\Controllers\UserAddressController;
 use App\Http\Controllers\WishlistController;
+use App\Models\UserAddress;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,8 +40,9 @@ Route::middleware(['auth','verified'])->group(function(){
             Route::delete('{cartItem}','destroy')->name('cartItem.destroy');
             Route::patch('/increment/{cartItem}','increment')->name('cartItem.increment');
             Route::patch('/decrement/{cartItem}','decrement')->name('cartItem.decrement');
-            // Route::post('/{product}','store')->name('cart.store');
         });
+        Route::patch('address/setMain/{userAddress}',[UserAddressController::class,'setMain'])->name('address.setMain');
+        Route::resource('/address',UserAddressController::class);
 });
 
 require __DIR__.'/auth.php';
