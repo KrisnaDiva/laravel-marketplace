@@ -37,7 +37,7 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-between align-items-center pt-1">
-                        <div> <i class="fa fa-star-o rating-star"></i> <span class="rating-number">4.8 | 1 Terjual</span> </div> <div><span class="rating-number">Kota Medan</span></div>
+                        <div> <i class="fa fa-star-o rating-star"></i> <span class="rating-number">4.8 | 1 Terjual</span> </div> <div><span class="rating-number">{{ $product->store->address->city->name }}</span></div>
                     </div>
                 </div>
             </div>
