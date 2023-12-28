@@ -6,17 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class UserAddress extends Model
+class City extends Model
 {
     use HasFactory;
-    protected $guarded=['id'];
-    public function user():BelongsTo{
-        return $this->belongsTo(User::class);
-    }
+    public $incrementing = false;
+    public $timestamps = false;
+    protected $fillable=['id','name','province_id'];
     public function province():BelongsTo{
         return $this->belongsTo(Province::class);
-    }
-    public function city():BelongsTo{
-        return $this->belongsTo(City::class);
     }
 }

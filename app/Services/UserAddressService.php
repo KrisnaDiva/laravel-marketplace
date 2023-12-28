@@ -35,7 +35,9 @@ class UserAddressService{
             $data=[
                 'isMain'=>0
             ];
+            if($oldMain){
             $this->updateAddress($oldMain->id,$data);
+            }
             $data=[
                 'isMain'=>1
             ];

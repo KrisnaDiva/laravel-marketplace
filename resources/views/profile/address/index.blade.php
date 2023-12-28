@@ -28,34 +28,6 @@
                 <div class="card-body">
                     <h4>Address</h4>
                     @foreach ($user->addresses->sortByDesc('isMain') as $address)
-                        @php
-                            $provinceId = $address->province_id;
-                            $apiKey = '9f3bea8727a27ab30805a9c7f5c89739';
-                            $apiUrl = "https://api.rajaongkir.com/starter/province?id=$provinceId";
-                            $curl = curl_init();
-                            curl_setopt_array($curl, [
-                                CURLOPT_URL => $apiUrl,
-                                CURLOPT_RETURNTRANSFER => true,
-                                CURLOPT_HTTPHEADER => ['key: ' . $apiKey],
-                            ]);
-                            $response = curl_exec($curl);
-                            curl_close($curl);
-                            $data = json_decode($response, true);
-                            $provinceName = isset($data['rajaongkir']['results']['province']) ? $data['rajaongkir']['results']['province'] : 'N/A';
-
-                            $cityId = $address->city_id;
-                            $apiUrl = "https://api.rajaongkir.com/starter/city?id=$cityId";
-                            $curl = curl_init();
-                            curl_setopt_array($curl, [
-                                CURLOPT_URL => $apiUrl,
-                                CURLOPT_RETURNTRANSFER => true,
-                                CURLOPT_HTTPHEADER => ['key: ' . $apiKey],
-                            ]);
-                            $response = curl_exec($curl);
-                            curl_close($curl);
-                            $data = json_decode($response, true);
-                            $cityName = isset($data['rajaongkir']['results']['city_name']) ? $data['rajaongkir']['results']['city_name'] : 'N/A';
-                        @endphp
                         <hr>
                         <div class="row">
                             <div class="col-8">
@@ -76,7 +48,7 @@
                                     @endif
                                 </p>
                                 <p class="text-muted">
-                                    {{ $address->district }}, {{ $cityName }}, {{ $provinceName }}, {{ $address->zip }}
+                                    {{ $address->district }}, {{ $address->city->name }}, {{ $address->province->name }}, {{ $address->zip }}
                                 </p>
                                 @if ($address->isMain==1)
                                     <span class="border border-danger text-danger p-1">Main</span>
