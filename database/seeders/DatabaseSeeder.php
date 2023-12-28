@@ -26,14 +26,13 @@ class DatabaseSeeder extends Seeder
             CitySeeder::class,
             UserSeeder::class,
             UserAddressSeeder::class,
+            StoreSeeder::class,
+            StoreAddressSeeder::class,
             CategorySeeder::class,
             ProductConditionSeeder::class,
             ProductSeeder::class,
             CartSeeder::class,
             CartItemSeeder::class
         ]);
-
-
-        Store::factory(1)->create();
     }
 }

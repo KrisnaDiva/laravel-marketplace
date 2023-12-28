@@ -23,7 +23,14 @@ class StoreCreateRequest extends FormRequest
     {
         return [
             'name'=>['required', 'string', 'max:255'],
-            'address'=>['required', 'string', 'max:500'],
+            'full_name' => ['required', 'max:255'],
+            'phone_number' => ['required', 'min:12', 'max:13'],
+            'province_id' => ['required'],
+            'city_id' => ['required'],
+            'district' => ['required', 'max:50'],
+            'zip' => ['required', 'max:5'],
+            'street' => ['required', 'max:255'],
+            'others' => ['max:255'],
         ];
     }
 }

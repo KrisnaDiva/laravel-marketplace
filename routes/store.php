@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Store\ProductController;
+use App\Http\Controllers\Store\StoreAddressController;
 use App\Http\Controllers\Store\StoreController;
 use Illuminate\Support\Facades\Route;
 
@@ -10,6 +11,7 @@ Route::middleware(['auth','verified'])->prefix('/store')->group(function(){
         Route::get('',[StoreController::class,'index'])->name('store.index');     
         Route::get('/{store}/edit',[StoreController::class,'edit'])->name('store.edit');
         Route::patch('/{store}',[StoreController::class,'update'])->name('store.update');
+        Route::put('/{address}',[StoreAddressController::class,'update'])->name('store.updateAddress');
         Route::resource('products',ProductController::class)->except(['show']);
         Route::delete('products/{product}/images/{image}',[ProductController::class,'destroyImage'])->name('products.destroyImage');
 

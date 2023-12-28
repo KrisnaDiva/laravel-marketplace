@@ -2,12 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Store;
 use App\Models\StoreAddress;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class StorePolicy
+class StoreAddressPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -20,10 +19,10 @@ class StorePolicy
     // /**
     //  * Determine whether the user can view the model.
     //  */
-    public function view(User $user, Store $store): bool
-    {
-        return $user->store->id==$store->id; 
-    }
+    // public function view(User $user, StoreAddress $storeAddress): bool
+    // {
+    //     //
+    // }
 
     // /**
     //  * Determine whether the user can create models.
@@ -33,22 +32,18 @@ class StorePolicy
     //     //
     // }
 
-    // /**
-    //  * Determine whether the user can update the model.
-    //  */
-    public function update(User $user, Store $store): bool
+    /**
+     * Determine whether the user can update the model.
+     */
+    public function update(User $user, StoreAddress $storeAddress): bool
     {
-        return $user->store->id==$store->id;
+        return $user->store->id==$storeAddress->store_id;
     }
-    // public function updateAddress(User $user, StoreAddress $storeAddress): bool
-    // {
-    //     return $user->store->id==$storeAddress->;
-    // }
 
-    // /**
-    //  * Determine whether the user can delete the model.
-    //  */
-    // public function delete(User $user, Store $store): bool
+    /**
+     * Determine whether the user can delete the model.
+     */
+    // public function delete(User $user, StoreAddress $storeAddress): bool
     // {
     //     //
     // }
@@ -56,7 +51,7 @@ class StorePolicy
     // /**
     //  * Determine whether the user can restore the model.
     //  */
-    // public function restore(User $user, Store $store): bool
+    // public function restore(User $user, StoreAddress $storeAddress): bool
     // {
     //     //
     // }
@@ -64,7 +59,7 @@ class StorePolicy
     // /**
     //  * Determine whether the user can permanently delete the model.
     //  */
-    // public function forceDelete(User $user, Store $store): bool
+    // public function forceDelete(User $user, StoreAddress $storeAddress): bool
     // {
     //     //
     // }

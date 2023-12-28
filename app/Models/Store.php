@@ -24,4 +24,7 @@ class Store extends Model
     public function products():HasMany{
         return $this->hasMany(Product::class);
     }
+    public function address():HasOne{
+        return $this->hasOne(StoreAddress::class);
+    }
 }

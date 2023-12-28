@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_addresses', function (Blueprint $table) {
+        Schema::create('store_addresses', function (Blueprint $table) {
             $table->id();
             $table->string('full_name');
             $table->string('phone_number');
@@ -21,8 +21,7 @@ return new class extends Migration
             $table->string('zip',5);
             $table->string('street');
             $table->string('others')->nullable();
-            $table->boolean('isMain');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('store_id');
             $table->timestamps();
         });
     }
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_addresses');
+        Schema::dropIfExists('store_addresses');
     }
 };

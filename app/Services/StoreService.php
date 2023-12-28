@@ -3,13 +3,14 @@ namespace App\Services;
 
 use App\Models\Image;
 use App\Repositories\StoreRepository;
+use App\Repositories\UserRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class StoreService{
-    public function __construct(private StoreRepository $storeRepository){}
+    public function __construct(private StoreRepository $storeRepository,private UserRepository $user,private StoreAddressService $storeAddressService){}
 
     public function getAllStore(){
         return $this->storeRepository->all();
@@ -18,8 +19,19 @@ class StoreService{
         return $this->storeRepository->paginate($perPage);
     }
     public function createStore(array $data){
-        $data['user_id']=Auth::id();
-        return $this->storeRepository->create($data);
+        try{
+            DB::beginTransaction();
+            $dataStore['user_id']=$this->user->getUserId();
+            $dataStore['name']=$data['name'];
+            $store=$this->storeRepository->create($dataStore);
+            unset($data['name']);
+            $data['store_id']=$store->id;
+            $this->storeAddressService->createAddress($data);
+            DB::commit();
+        }catch(QueryException $e){
+            DB::rollBack();
+        }
+
     }
     public function getStore($id){
         return $this->storeRepository->find($id);

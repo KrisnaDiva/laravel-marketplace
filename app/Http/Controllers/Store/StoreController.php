@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Store\StoreAddressUpdateRequest;
 use App\Http\Requests\Store\StoreCreateRequest;
 use App\Http\Requests\Store\StoreUpdateRequest;
 use App\Models\Store;
+use App\Repositories\ProvinceRepository;
 use App\Repositories\UserRepository;
+use App\Services\StoreAddressService;
 use App\Services\StoreService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -15,13 +18,13 @@ use Illuminate\Http\Request;
 
 class StoreController extends Controller
 {
-    public function __construct(private StoreService $storeService,private UserRepository $user){}
+    public function __construct(private StoreService $storeService,private UserRepository $user,private ProvinceRepository $province,private StoreAddressService $storeAddressService){}
     /**
      * Display a listing of the resource.
      */
     public function index():View{
         return view('store.index',[
-            'user'=>$this->user->getUser()
+            'user'=>$this->user->getUser(),
         ]);
     }
     
@@ -38,6 +41,7 @@ class StoreController extends Controller
     {
         return view('store.create',[
             'user'=>$this->user->getUser(),
+            'provinces'=>$this->province->all()
         ]);
     }
 
@@ -61,9 +65,12 @@ class StoreController extends Controller
     public function edit($id):View
     {
         $this->authorize('view',$this->storeService->getStore($id));
+        $store=$this->storeService->getStore($id);
         return view('store.edit',[
             'user'=>$this->user->getUser(),
-            'store'=>$this->storeService->getStore($id)
+            'store'=>$store,
+            'address'=>$store->address,
+            'provinces'=>$this->province->all()
         ]);
     }
 

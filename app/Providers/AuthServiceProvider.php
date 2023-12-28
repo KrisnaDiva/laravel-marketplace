@@ -11,6 +11,7 @@ use App\Models\UserAddress;
 use App\Policies\CartItemPolicy;
 use App\Policies\CartPolicy;
 use App\Policies\ProductPolicy;
+use App\Policies\StoreAddressPolicy;
 use App\Policies\StorePolicy;
 use App\Policies\UserAddressPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -24,6 +25,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Store::class => StorePolicy::class,
+        StoreAddressPolicy::class => StoreAddressPolicy::class,
         Product::class => ProductPolicy::class,
         CartItemPolicy::class=>CartItem::class,
         UserAddressPolicy::class=>UserAddress::class,
