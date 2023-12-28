@@ -1,5 +1,5 @@
 @extends('layouts.main')
-@section('title', 'Profile')
+@section('title', 'Address')
 @section('container')
 <div class="row">
     <div class="col-8">
@@ -42,7 +42,7 @@
                                     </div>
 
                                 </div>
-                                <p class="text-muted">{{ $address->street }}
+                                <p class="text-muted my-1">{{ $address->street }}
                                     @if ($address->others)
                                         ({{ $address->others }})
                                     @endif
@@ -56,28 +56,28 @@
                             </div>
                             <div class="col-4 d-flex justify-content-end">
                                 <div class="row justify-content-end">
-                                    <div class="col-3 text-end">
+                                    <div class="col-3 {{ $address->isMain==1 ? 'mx-5' : '' }}">
                                         <a href="{{ route('address.edit',$address->id) }}" class="btn btn-warning">Edit</a>
 
                                     </div>
+                                    @if ($address->isMain==0)
                                     <div class="col-3 text-end">
-                                        @if ($address->isMain==0)
                                         <form action="{{ route('address.destroy',$address->id) }}" method="post">
                                         @method('delete')
                                         @csrf
                                         <button class="btn btn-danger">Delete</button>
                                         </form>                                  
-                                        @endif
                                     </div>
+                                    @endif
+                                    @if ($address->isMain==0)
                                     <div class="col-6 text-end">
-                                        @if ($address->isMain==0)
                                         <form action="{{ route('address.setMain',$address->id) }}" method="post">
                                         @method('patch')
                                         @csrf
                                         <button class="btn btn-success">Set as Main</button>
                                         </form>                                  
-                                        @endif
                                     </div>
+                                    @endif
                                 </div>
                                
                             </div>

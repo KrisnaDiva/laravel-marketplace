@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Address\CityController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CartItemController;
@@ -43,6 +44,10 @@ Route::middleware(['auth','verified'])->group(function(){
         });
         Route::patch('address/setMain/{userAddress}',[UserAddressController::class,'setMain'])->name('address.setMain');
         Route::resource('/address',UserAddressController::class);
+
+
+
+        Route::get('/get-cities/{province}', [CityController::class,'getCities']);
 });
 
 require __DIR__.'/auth.php';

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedSmallInteger('province_id');
             $table->unsignedSmallInteger('city_id');
             $table->string('district');
-            $table->unsignedSmallInteger('zip');
+            $table->string('zip',6);
             $table->string('street');
             $table->string('others')->nullable();
             $table->boolean('isMain');

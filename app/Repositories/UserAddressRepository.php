@@ -19,9 +19,9 @@ class UserAddressRepository
     {
         return UserAddress::find($id);
     }
-    public function whereFirst(string $field,$value)
+    public function whereMain(string $field1,$value1,string $field2,$value2)
     {
-        return UserAddress::where($field,$value)->first();
+        return UserAddress::where($field1,$value1)->where($field2,$value2)->first();
     }
 
     public function create(array $data)

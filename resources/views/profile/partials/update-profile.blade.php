@@ -51,7 +51,7 @@
 
                     <div class="mb-3">
                         <label class="mb-2 text-muted" for="phone_number">Phone Number</label>
-                        <input id="phone_number" type="text" class="form-control @error('phone_number') is-invalid @enderror"
+                        <input id="phone_number" type="number" class="form-control @error('phone_number') is-invalid @enderror"
                             name="phone_number" value="{{ $user->phone_number }}" required>
                         @error('phone_number')
                             <div class="invalid-feedback">
