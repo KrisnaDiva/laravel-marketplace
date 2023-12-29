@@ -62,12 +62,56 @@
                                         </div> --}}
                                     </div>
                                 </div>
-                                <div class="mt-4 mb-3">
-                                    <h6>Shipping : to {{ $user->addresses->where('isMain', 1)->first()->city->name }}</h6>
-                                    <label style="font-weight: 500">Ongkos Kirim : </label>
-                                    <a id="example" tabindex="0" class="badge bg-primary text-decoration-none" role="button"
-                                        data-bs-toggle="popover">click</a>
-                                </div>
+                                @if ($user->addresses->where('isMain', 1)->first())
+                                    @php
+                                        $couriers = ['jne', 'tiki', 'pos'];
+                                        $ongkirResults = [];
+
+                                        foreach ($couriers as $courier) {
+                                            $responseCost = Http::withHeaders([
+                                                'key' => '9f3bea8727a27ab30805a9c7f5c89739',
+                                            ])->post('https://api.rajaongkir.com/starter/cost', [
+                                                'origin' => $product->store->address->city->id,
+                                                'destination' => $user->addresses->where('isMain', 1)->first()->city->id,
+                                                'weight' => $product->weight,
+                                                'courier' => $courier,
+                                            ]);
+
+                                            $content = json_decode($responseCost, false);
+                                            $ongkirResults[$courier] = $content->rajaongkir->results;
+                                        }
+                                    @endphp
+                                    <div class="mt-4 mb-3">
+                                        <h6>Shipping : to {{ $user->addresses->where('isMain', 1)->first()->city->name }}
+                                        </h6>
+                                        <label style="font-weight: 500">Ongkos Kirim : </label>
+                                        <a id="example" tabindex="0" class="badge bg-primary text-decoration-none"
+                                            role="button" data-bs-toggle="popover">click</a>
+                                    </div>
+                                    <div hidden>
+                                        <div data-name="popover-content">
+                                            <div class="input-group">
+
+                                                @foreach ($ongkirResults as $results)
+                                                    @foreach ($results as $item)
+                                                        @if ($item->costs)
+                                                            <h6 class="mb-2">{{ $item->name }}</h6>
+                                                        @endif
+                                                        <hr>
+                                                        @foreach ($item->costs as $cost)
+                                                            <label class="mb-2">{{ $cost->service }}
+                                                                @foreach ($cost->cost as $harga)
+                                                                    Rp{{ $harga->value }} | est :
+                                                                    {{ str_replace(' HARI', '', $harga->etd) }} Days
+                                                                @endforeach
+                                                            </label>
+                                                        @endforeach
+                                                    @endforeach
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                                 <form action="{{ route('cart.store', $product->id) }}" method="POST">
                                     @csrf
                                     <div class="form-group row">
@@ -112,47 +156,6 @@
             </div>
         </div>
     </div>
-    @php
-        $couriers = ['jne', 'tiki', 'pos'];
-        $ongkirResults = [];
-
-        foreach ($couriers as $courier) {
-            $responseCost = Http::withHeaders([
-                'key' => '9f3bea8727a27ab30805a9c7f5c89739',
-            ])->post('https://api.rajaongkir.com/starter/cost', [
-                'origin' => $product->store->address->city->id,
-                'destination' => $user->addresses->where('isMain', 1)->first()->city->id,
-                'weight' => $product->weight,
-                'courier' => $courier,
-            ]);
-
-            $content = json_decode($responseCost, false);
-            $ongkirResults[$courier] = $content->rajaongkir->results;
-        }
-    @endphp
-    <div hidden>
-        <div data-name="popover-content">
-            <div class="input-group">
-
-                @foreach ($ongkirResults as $results)
-                    @foreach ($results as $item)
-                        @if ($item->costs)
-                            <h6 class="mb-2">{{ $item->name }}</h6>
-                        @endif
-                        <hr>
-                        @foreach ($item->costs as $cost)
-                            <label class="mb-2">{{ $cost->service }}
-                                @foreach ($cost->cost as $harga)
-                                    Rp{{ $harga->value }} | est : {{ str_replace(' HARI', '', $harga->etd) }} Days
-                                @endforeach
-                            </label>
-                        @endforeach
-                    @endforeach
-                @endforeach
-            </div>
-        </div>
-    </div>
-
     <script src="{{ asset('js/product.js') }}"></script>
     <script>
         $(document).ready(function() {
