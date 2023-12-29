@@ -4,6 +4,7 @@ use App\Http\Controllers\Address\CityController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CartItemController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Store\ProductController;
@@ -45,7 +46,7 @@ Route::middleware(['auth','verified'])->group(function(){
         Route::patch('address/setMain/{userAddress}',[UserAddressController::class,'setMain'])->name('address.setMain');
         Route::resource('/address',UserAddressController::class);
 
-
+        Route::post('/checkout',[CheckoutController::class,'store'])->name('checkout');
 
         Route::get('/get-cities/{province}', [CityController::class,'getCities']);
 });

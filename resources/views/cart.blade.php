@@ -60,12 +60,13 @@
                                                     @endif
                                                     <div class="row mb-4 d-flex justify-content-between align-items-center">
                                                         <div class="col-md-2 col-lg-2 col-xl-2">
+                                                            <input type="checkbox" id="checkbox_{{ $item->id }}" value="{{ $item->id }}" class="form-check-input" onclick="handleCheckboxClick(this)">
                                                             <img src="{{ asset('storage/' . $item->product->images->first()->url) }}"
                                                                 class="img-fluid rounded-3"
                                                                 alt="{{ $item->product->name }}">
                                                         </div>
                                                         <div class="col-md-3 col-lg-3 col-xl-3">
-                                                            <h6 class="text-black mb-0">{{ $item->product->name }}</h6>
+                                                            <h6 class="text-black mb-0">{{ Str::limit($item->product->name, 30, '...') }}</h6>
                                                         </div>
                                                         <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
                                                             @if ($item->quantity <= 1)
@@ -108,9 +109,10 @@
                                                         </div>
                                                     </div>
                                                     <hr class="my-4">
-                                                @else
+                                                @else                                                
                                                     <div class="row mb-4 d-flex justify-content-between align-items-center"
                                                         style="background-color: whitesmoke">
+                                                        
                                                         <div class="col-md-2 col-lg-2 col-xl-2">
                                                             <img src="{{ asset('storage/' . $item->product->images->first()->url) }}"
                                                                 class="img-fluid rounded-3" alt="Cotton T-shirt">
@@ -144,8 +146,8 @@
                                             @endphp
 
                                             @foreach ($user->cart->cartItems()->whereHas('product', function ($query) {
-                $query->where('stock', '>', 0);
-            })->get() as $item)
+                                            $query->where('stock', '>', 0);
+                                            })->get() as $item)
                                                 @php
                                                     $total += $item->quantity * $item->product->price;
                                                 @endphp
@@ -153,52 +155,27 @@
 
                                             <h5>Rp{{ number_format($total, 0, ',', '.') }}</h5>
                                         </div>
-
                                         @endif
-                                        <div class="pt-5">
-                                            <h6 class="mb-0"><a href="#!" class="text-body"><i
-                                                        class="fa fa-long-arrow-alt-left me-2"></i>Back to shop</a></h6>
+                                        <div class="row pt-5">
+                                            <div class="col-6">
+                                                <h6 class="mb-0"><a href="#!" class="text-body">
+                                                    <i class="fa fa-long-arrow-alt-left me-2"></i>Back to shop</a>
+                                                </h6>
+                                            </div>
+                                            @if ($user->cart->cartItems->isNotEmpty())
+                                            <div class="col-6 text-end">
+                                                <form method="post" action="{{ route('checkout') }}">
+                                                    @csrf
+                                                    
+                                                        <button type="submit" class="btn btn-primary">Checkout</button>
+                                                    
+                                                    <div id="hiddenInputsContainer"></div>
+                                                </form>
+                                            </div>
+                                            @endif
                                         </div>
-
                                     </div>
                                 </div>
-
-                                {{-- <div class="col-lg-4 bg-grey">
-                  <div class="p-5">
-                    <h3 class="fw-bold mb-5 mt-2 pt-1">Summary</h3>
-                    <hr class="my-4">
-  
-                    <div class="d-flex justify-content-between mb-4">
-                      <h5 class="text-uppercase">items 3</h5>
-                      <h5>€ 132.00</h5>
-                    </div>
-  
-                    <h5 class="text-uppercase mb-3">Shipping</h5>
-  
-                    <div class="mb-4 pb-2">
-                      <select class="select">
-                        <option value="1">Standard-Delivery- €5.00</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                        <option value="4">Four</option>
-                      </select>
-                    </div>
-  
-                    <h5 class="text-uppercase mb-3">Give code</h5>
-  
-                    <div class="mb-5">
-                      <div class="form-outline">
-                        <input type="text" id="form3Examplea2" class="form-control form-control-lg" />
-                        <label class="form-label" for="form3Examplea2">Enter your code</label>
-                      </div>
-                    </div>
-  
-                    <hr class="my-4">
-                    <button type="button" class="btn btn-dark btn-block btn-lg"
-                      data-mdb-ripple-color="dark">Register</button>  
-                  </div>
-                </div> --}}
-
                             </div>
                         </div>
                     </div>
@@ -207,6 +184,27 @@
         </div>
     </section>
 
+    <script>
+        function handleCheckboxClick(checkbox) {
+            var hiddenInputsContainer = document.getElementById('hiddenInputsContainer');
+    
+            // Create hidden input for the clicked checkbox
+            if (checkbox.checked) {
+                var hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'carts[' + checkbox.value + ']';
+                hiddenInput.value = checkbox.value;
+                hiddenInputsContainer.appendChild(hiddenInput);
+            } else {
+                // If the checkbox is unchecked, remove the corresponding hidden input
+                var hiddenInputToRemove = hiddenInputsContainer.querySelector('input[name="cart[' + checkbox.value + ']"]');
+                if (hiddenInputToRemove) {
+                    hiddenInputToRemove.parentNode.removeChild(hiddenInputToRemove);
+                }
+            }
+        }
+    </script>
+    
     <script>
         function handleInputChange() {
             var inputElement = document.getElementById("quantity");

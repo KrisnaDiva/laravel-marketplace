@@ -69,7 +69,7 @@
 
                                         foreach ($couriers as $courier) {
                                             $responseCost = Http::withHeaders([
-                                                'key' => '9f3bea8727a27ab30805a9c7f5c89739',
+                                                'key' => 'c02b93cf40f1b5bc247494c12cae4148',
                                             ])->post('https://api.rajaongkir.com/starter/cost', [
                                                 'origin' => $product->store->address->city->id,
                                                 'destination' => $user->addresses->where('isMain', 1)->first()->city->id,
