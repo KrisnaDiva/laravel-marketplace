@@ -31,7 +31,7 @@
                 </div>
                 <div class="product-detail-container p-2">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="dress-name">{{ $product->name }}</h5>
+                        <h5 class="dress-name">{{ Str::limit($product->name, 10, '...') }}</h5>
                         <div class="d-flex flex-column mb-2"> <span class="new-price">Rp{{ number_format($product->price, 0, ',', '.') }}</span> 
                             {{-- <small class="old-price text-right">$5.99</small>  --}}
                         </div>

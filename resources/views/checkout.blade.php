@@ -57,24 +57,26 @@
 
 
                         @foreach ($storeCarts as $cart)
-                            {{-- @php
+                            @php
                                 $couriers = ['jne', 'tiki', 'pos'];
                                 $ongkirResults = [];
-
+                                $totalWeight = $storeCarts->sum(function ($cart) {
+                                    return $cart->product->weight * $cart->quantity;
+                                });
                                 foreach ($couriers as $courier) {
                                     $responseCost = Http::withHeaders([
                                         'key' => 'c02b93cf40f1b5bc247494c12cae4148',
                                     ])->post('https://api.rajaongkir.com/starter/cost', [
                                         'origin' => $cart->product->store->address->city->id,
                                         'destination' => $user->addresses->where('isMain', 1)->first()->city->id,
-                                        'weight' => $cart->product->weight,
+                                        'weight' => $totalWeight,
                                         'courier' => $courier,
                                     ]);
 
                                     $content = json_decode($responseCost, false);
                                     $ongkirResults[$courier] = $content->rajaongkir->results;
                                 }
-                            @endphp --}}
+                            @endphp
                             <div class="row mt-3 align-items-center">
                                 <div class="col-6">
                                     <div class="row align-items-center">
@@ -114,27 +116,30 @@
                             <div class="col-4 border-end border-dark">
                                 <select id="shippingOption{{ $cart->id }}" class="form-select"
                                     aria-label="Default select example">
-                                    <option>Open this select menu</option>
-                                    <option value="10000">1</option>
-                                    <option value="20000">2</option>
-                                    {{-- @foreach ($ongkirResults as $results)
+                                    <option value="0">Open this select menu</option>
+                                    @foreach ($ongkirResults as $results)
                                         @foreach ($results as $item)
                                             @foreach ($item->costs as $cost)
-                                                <option class="mb-2">
-                                                    @if ($item->name == 'Jalur Nugraha Ekakurir (JNE)')
-                                                        JNE
-                                                    @elseif($item->name == 'Citra Van Titipan Kilat (TIKI)')
-                                                        TIKI
-                                                    @endif
-                                                    {{ $cost->service }}
-                                                    @foreach ($cost->cost as $harga)
-                                                        Rp{{ $harga->value }} (est :
-                                                        {{ str_replace(' HARI', '', $harga->etd) }} Days )
-                                                    @endforeach
+                                                @php
+                                                    $optionValue = '';
+                                                    $value = null;
+                                                    if ($item->name == 'Jalur Nugraha Ekakurir (JNE)') {
+                                                        $optionValue .= 'JNE';
+                                                    } elseif ($item->name == 'Citra Van Titipan Kilat (TIKI)') {
+                                                        $optionValue .= 'TIKI';
+                                                    }
+                                                    $optionValue .= $cost->service . ' ';
+                                                    foreach ($cost->cost as $harga) {
+                                                        $value = $harga->value;
+                                                        $optionValue .= 'Rp' . $harga->value . ' (est: ' . str_replace(' HARI', '', $harga->etd) . ' Days)';
+                                                    }
+                                                @endphp
+                                                <option class="mb-2" value="{{ $value }}">
+                                                    {!! $optionValue !!}
                                                 </option>
                                             @endforeach
                                         @endforeach
-                                    @endforeach --}}
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="col-2 text-center">
@@ -144,11 +149,41 @@
                             <script>
                                 $(document).ready(function() {
                                     var id = {{ $cart->id }};
-                                    $('#shippingOption' + id).change(function() {
-                                        var selectedOptionValue = $(this).val();
-                                        $('#shippingCost' + id).text('Rp' + selectedOptionValue);
-                                    });
+                                    var cartTotal = {{ $cartsTotal }};
 
+                                    function updateTotal(selectedOptionValue) {
+                                        cartTotal -= parseInt($('#shippingOption' + id).data('previousValue')) || 0;
+                                        cartTotal += parseInt(selectedOptionValue);
+
+                                        // Update the displayed shipping cost and total
+                                        $('#shippingCost' + id).text('Rp' + selectedOptionValue);
+                                        $('#totalPayment' + id).text('Rp' + cartTotal);
+
+                                        // Store the current selected option value for future reference
+                                        $('#shippingOption' + id).data('previousValue', selectedOptionValue);
+                                    }
+
+                                    function updateTotalSum() {
+                                        var sum = 0;
+                                        $('[id^="totalPayment"]').each(function() {
+                                            sum += parseInt($(this).text().replace('Rp', '').replace(',', '')) || 0;
+                                        });
+
+                                        // Update the displayed total sum
+                                        $('#total').text('Rp' + sum);
+                                    }
+
+                                    // Call updateTotalSum initially to set the initial total sum
+
+                                    // Handle change event of the select dropdown
+                                    $('#shippingOption' + id).change(function() {
+                                        // Get the selected option value
+                                        var selectedOptionValue = $(this).val();
+
+                                        // Update the total by adding the selected shipping option value
+                                        updateTotal(selectedOptionValue);
+                                        updateTotalSum();
+                                    });
                                 });
                             </script>
                         </div>
@@ -158,18 +193,17 @@
                                 <span>Total Pesanan ({{ $storeCarts->sum('quantity') }} Produk) :</span>
                             </div>
                             <div class="col-2 text-center">
-                                <span>Rp{{ number_format($cartsTotal, 0, ',', '.') }}</span>
+                                <span id="totalPayment{{ $cart->id }}"></span>
                                 @php
                                     $totalCarts += $cartsTotal;
                                     $cartsTotal = 0;
-
                                 @endphp
                             </div>
 
                         </div>
                     @else
                         @foreach ($storeCarts as $cart)
-                            {{-- @php
+                            @php
                                 $couriers = ['jne', 'tiki', 'pos'];
                                 $ongkirResults = [];
 
@@ -179,14 +213,14 @@
                                     ])->post('https://api.rajaongkir.com/starter/cost', [
                                         'origin' => $cart->product->store->address->city->id,
                                         'destination' => $user->addresses->where('isMain', 1)->first()->city->id,
-                                        'weight' => $cart->product->weight,
+                                        'weight' => $cart->product->weight * $cart->quantity,
                                         'courier' => $courier,
                                     ]);
 
                                     $content = json_decode($responseCost, false);
                                     $ongkirResults[$courier] = $content->rajaongkir->results;
                                 }
-                            @endphp --}}
+                            @endphp
                             <div class="row">
                                 <hr>
                                 <div class="col-12">
@@ -227,45 +261,74 @@
                                 <div class="col-4 border-end border-dark">
                                     <select id="shippingOption{{ $cart->id }}" class="form-select"
                                         aria-label="Default select example">
-                                        <option>Open this select menu</option>
-                                        <option value="10000">1</option>
-                                        <option value="20000">2</option>
-                                        {{-- @foreach ($ongkirResults as $results)
+                                        <option value="0">Open this select menu</option>
+                                        @foreach ($ongkirResults as $results)
                                             @foreach ($results as $item)
                                                 @foreach ($item->costs as $cost)
-                                                    <option class="mb-2">
-                                                        @if ($item->name == 'Jalur Nugraha Ekakurir (JNE)')
-                                                            JNE
-                                                        @elseif($item->name == 'Citra Van Titipan Kilat (TIKI)')
-                                                            TIKI
-                                                        @endif
-                                                        {{ $cost->service }}
-                                                        @foreach ($cost->cost as $harga)
-                                                            Rp{{ $harga->value }} (est :
-                                                            {{ str_replace(' HARI', '', $harga->etd) }} Days )
-                                                        @endforeach
+                                                    @php
+                                                        $optionValue = '';
+                                                        $value = null;
+                                                        if ($item->name == 'Jalur Nugraha Ekakurir (JNE)') {
+                                                            $optionValue .= 'JNE';
+                                                        } elseif ($item->name == 'Citra Van Titipan Kilat (TIKI)') {
+                                                            $optionValue .= 'TIKI';
+                                                        }
+                                                        $optionValue .= $cost->service . ' ';
+                                                        foreach ($cost->cost as $harga) {
+                                                            $value = $harga->value;
+                                                            $optionValue .= 'Rp' . $harga->value . ' (est: ' . str_replace(' HARI', '', $harga->etd) . ' Days)';
+                                                        }
+                                                    @endphp
+                                                    <option class="mb-2" value="{{ $value }}">
+                                                        {!! $optionValue !!}
                                                     </option>
                                                 @endforeach
                                             @endforeach
-                                        @endforeach --}}
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-2 text-center">
                                     <span id="shippingCost{{ $cart->id }}">-</span>
                                 </div>
+                                @php
+                                    $cartTotal += $cart->product->price * $cart->quantity;
+                                @endphp
                                 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
                                 <script>
                                     $(document).ready(function() {
                                         var id = {{ $cart->id }};
+                                        var cartTotal = {{ $cartTotal }};
+
+                                        function updateTotal(selectedOptionValue) {
+                                            cartTotal -= parseInt($('#shippingOption' + id).data('previousValue')) || 0;
+                                            cartTotal += parseInt(selectedOptionValue);
+
+                                            // Update the displayed shipping cost and total
+                                            $('#shippingCost' + id).text('Rp' + selectedOptionValue);
+                                            $('#totalPayment' + id).text('Rp' + cartTotal);
+
+                                            // Store the current selected option value for future reference
+                                            $('#shippingOption' + id).data('previousValue', selectedOptionValue);
+                                        }
+
+                                        function updateTotalSum() {
+                                            var sum = 0;
+                                            $('[id^="totalPayment"]').each(function() {
+                                                sum += parseInt($(this).text().replace('Rp', '').replace(',', '')) || 0;
+                                            });
+
+                                            // Update the displayed total sum
+                                            $('#total').text('Rp' + sum);
+                                        }
                                         // Handle change event of the select dropdown
                                         $('#shippingOption' + id).change(function() {
                                             // Get the selected option value
                                             var selectedOptionValue = $(this).val();
 
-                                            // Update the displayed shipping cost
-                                            $('#shippingCost' + id).text('Rp' + selectedOptionValue);
+                                            // Update the total by adding the selected shipping option value
+                                            updateTotal(selectedOptionValue);
+                                            updateTotalSum();
                                         });
-
                                     });
                                 </script>
                             </div>
@@ -275,12 +338,11 @@
                                     <span>Total Pesanan ({{ $storeCarts->sum('quantity') }} Produk) :</span>
                                 </div>
                                 <div class="col-2 text-center">
-                                    <span>Rp{{ number_format($cart->product->price * $cart->quantity, 0, ',', '.') }}</span>
+                                    <span id="totalPayment{{ $cart->id }}"></span>
                                 </div>
-
                             </div>
                             @php
-                                $cartTotal += $cart->product->price * $cart->quantity;
+                                $cartTotal = 0;
                             @endphp
                         @endforeach
                     @endif
@@ -293,7 +355,7 @@
                     <span>Total Pembayaran : </span>
                 </div>
                 <div class="col-2 text-center">
-                    <span>Rp{{ number_format($totalCarts + $cartTotal, 0, ',', '.') }}</span>
+                    <span id="total"></span>
                 </div>
             </div>
             <div class="row justify-content-end mt-5 px-5">
