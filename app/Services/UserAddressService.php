@@ -48,4 +48,7 @@ class UserAddressService{
         }
        
     }
+    public function getMainAddress(){
+        return $this->userAddressRepository->whereMain('isMain',1,'user_id',$this->user->getUserId());
+    }
 }

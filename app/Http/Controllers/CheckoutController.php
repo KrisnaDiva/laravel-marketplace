@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\CartItem;
 use App\Repositories\UserRepository;
 use App\Services\ProductService;
+use App\Services\UserAddressService;
 use Illuminate\Http\Request;
 
 class CheckoutController extends Controller
 {
-    public function __construct(private UserRepository $user,private ProductService $productService){}
+    public function __construct(private UserRepository $user,private ProductService $productService,private UserAddressService $userAddressService){}
    public function store(Request $request)
 {
     $carts = CartItem::whereIn('id', $request->carts)
@@ -17,9 +18,12 @@ class CheckoutController extends Controller
         ->get()
         ->groupBy('product.store.id');
 
+        $user=$this->user->getUser();
     return view('checkout', [
-        'user' => $this->user->getUser(),
+        'user' => $user,
         'groupedCarts' => $carts,
+        'addresses'=>$user->addresses,
+        'mainAddress'=>$this->userAddressService->getMainAddress()
     ]);
 }
 

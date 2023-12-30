@@ -1,19 +1,34 @@
 @extends('layouts.main')
 @section('title', 'Dashboard')
 @section('container')
+<div class="row">
+    <div class="col-8">
+        @if (session()->has('success'))
+            <div class="position-fixed top-2 start-50 translate-middle-x" style="z-index: 1050;">
+                <div id="successAlert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+            <script>
+                setTimeout(function() {
+                    $('#successAlert').alert('close');
+                }, 5000);
+            </script>
+        @endif
+    </div>
+</div>
     <div class="row">
-
         <div class="col-12 shadow p-5">
             <div class="row mb-3">
                 <h4 class="text-danger">Alamat Pengiriman</h4>
             </div>
             <div class="row">
                 <div class="col-2">
-                    <h5>Krisna Diva (089658554101)</h5>
+                    <h5>{{ $mainAddress->full_name }} ({{ $mainAddress->phone_number }})</h5>
                 </div>
                 <div class="col-8 d-flex ">
-                    <p>Jalan Bunga Wijaya Kesuma II No.99 B, Padang Bulan Selayang Ii, Medan Selayang, KOTA MEDAN - MEDAN
-                        SELAYANG, SUMATERA UTARA, ID 20131</p>
+                    <p>{{ $mainAddress->street }}, {{ $mainAddress->city->name }} - {{$mainAddress->district}}, {{ $mainAddress->province->name }}, ID {{ $mainAddress->zip }}</p>
                 </div>
                 <div class="col-2 d-flex justify-content-between">
                     <div>
@@ -57,7 +72,7 @@
 
 
                         @foreach ($storeCarts as $cart)
-                            @php
+                            {{-- @php
                                 $couriers = ['jne', 'tiki', 'pos'];
                                 $ongkirResults = [];
                                 $totalWeight = $storeCarts->sum(function ($cart) {
@@ -72,11 +87,10 @@
                                         'weight' => $totalWeight,
                                         'courier' => $courier,
                                     ]);
-
                                     $content = json_decode($responseCost, false);
                                     $ongkirResults[$courier] = $content->rajaongkir->results;
                                 }
-                            @endphp
+                            @endphp --}}
                             <div class="row mt-3 align-items-center">
                                 <div class="col-6">
                                     <div class="row align-items-center">
@@ -117,7 +131,9 @@
                                 <select id="shippingOption{{ $cart->id }}" class="form-select"
                                     aria-label="Default select example">
                                     <option value="0">Open this select menu</option>
-                                    @foreach ($ongkirResults as $results)
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    {{-- @foreach ($ongkirResults as $results)
                                         @foreach ($results as $item)
                                             @foreach ($item->costs as $cost)
                                                 @php
@@ -139,7 +155,7 @@
                                                 </option>
                                             @endforeach
                                         @endforeach
-                                    @endforeach
+                                    @endforeach --}}
                                 </select>
                             </div>
                             <div class="col-2 text-center">
@@ -203,10 +219,9 @@
                         </div>
                     @else
                         @foreach ($storeCarts as $cart)
-                            @php
+                            {{-- @php
                                 $couriers = ['jne', 'tiki', 'pos'];
                                 $ongkirResults = [];
-
                                 foreach ($couriers as $courier) {
                                     $responseCost = Http::withHeaders([
                                         'key' => 'c02b93cf40f1b5bc247494c12cae4148',
@@ -216,11 +231,10 @@
                                         'weight' => $cart->product->weight * $cart->quantity,
                                         'courier' => $courier,
                                     ]);
-
                                     $content = json_decode($responseCost, false);
                                     $ongkirResults[$courier] = $content->rajaongkir->results;
                                 }
-                            @endphp
+                            @endphp --}}
                             <div class="row">
                                 <hr>
                                 <div class="col-12">
@@ -262,7 +276,9 @@
                                     <select id="shippingOption{{ $cart->id }}" class="form-select"
                                         aria-label="Default select example">
                                         <option value="0">Open this select menu</option>
-                                        @foreach ($ongkirResults as $results)
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        {{-- @foreach ($ongkirResults as $results)
                                             @foreach ($results as $item)
                                                 @foreach ($item->costs as $cost)
                                                     @php
@@ -284,7 +300,7 @@
                                                     </option>
                                                 @endforeach
                                             @endforeach
-                                        @endforeach
+                                        @endforeach --}}
                                     </select>
                                 </div>
                                 <div class="col-2 text-center">
@@ -376,157 +392,45 @@
                 </div>
                 <div class="modal-body">
                     <div class="row p-3">
+                        <form action="{{ route('address.setMainWithoutParam') }}" method="post"> 
+                            @method('patch')
+                            @csrf
+                        @foreach ($addresses->sortByDesc('isMain') as $address)
                         <div class="col-12">
                             <div class="row">
                                 <div class="col-1">
-                                    <input type="radio" class="form-check" name="address">
+                                    <input type="radio" class="form-check" name="address" @checked($address->isMain==1) value="{{ $address->id }}">
                                 </div>
                                 <div class="col-9">
-                                    <span class="text-muted"><b>Krisna diva</b> | (+62) 89658444101 <span
-                                            class="border border-danger text-danger px-1">Main</span></span>
+                                    <span class="text-muted"><b>{{ $address->full_name }}</b> | {{ $address->phone_number }} 
+                                        @if ($address->isMain==1)
+                                        <span class="border border-danger text-danger px-1">Main</span> 
+                                        @endif
+                                    </span>
                                 </div>
                                 <div class="col-2 d-flex justify-content-end">
-                                    <button class="badge bg-primary">Ubah</button>
+                                    <a class="badge bg-primary" href="{{ route('address.edit',$address->id) }}">Ubah</a>
                                 </div>
                             </div>
                             <div class="row justify-content-center">
                                 <div class="col-10">
-                                    <span>Jalan Bunga Wijaya Kesuma II No.99 B, Padang Bulan Selayang Ii, Medan Selayang
-                                        MEDAN SELAYANG, KOTA MEDAN, SUMATERA UTARA, ID, 20131</span>
+                                    <span>{{ $address->street }}, {{ $address->city->name }} - {{$address->district}}, {{ $address->province->name }}, ID {{ $address->zip }}</span>
                                 </div>
                             </div>
                             <hr>
-                        </div>
-                        <div class="col-12">
-                            <div class="row">
-                                <div class="col-1">
-                                    <input type="radio" class="form-check" name="address">
-                                </div>
-                                <div class="col-9">
-                                    <span class="text-muted"><b>Krisna diva</b> | (+62) 89658444101</span>
-                                </div>
-                                <div class="col-2 d-flex justify-content-end">
-                                    <button class="badge bg-primary">Ubah</button>
-                                </div>
-                            </div>
-                            <div class="row justify-content-center">
-                                <div class="col-10">
-                                    <span>Jalan Bunga Wijaya Kesuma II No.99 B, Padang Bulan Selayang Ii, Medan Selayang
-                                        MEDAN SELAYANG, KOTA MEDAN, SUMATERA UTARA, ID, 20131</span>
-                                </div>
-                            </div>
-                            <hr>
-                        </div>
-                        <div class="col-12">
-                            <div class="row">
-                                <div class="col-1">
-                                    <input type="radio" class="form-check" name="address">
-                                </div>
-                                <div class="col-9">
-                                    <span class="text-muted"><b>Krisna diva</b> | (+62) 89658444101</span>
-                                </div>
-                                <div class="col-2 d-flex justify-content-end">
-                                    <button class="badge bg-primary">Ubah</button>
-                                </div>
-                            </div>
-                            <div class="row justify-content-center">
-                                <div class="col-10">
-                                    <span>Jalan Bunga Wijaya Kesuma II No.99 B, Padang Bulan Selayang Ii, Medan Selayang
-                                        MEDAN SELAYANG, KOTA MEDAN, SUMATERA UTARA, ID, 20131</span>
-                                </div>
-                            </div>
-                            <hr>
-                        </div>
-                        <div class="col-12">
-                            <div class="row">
-                                <div class="col-1">
-                                    <input type="radio" class="form-check" name="address">
-                                </div>
-                                <div class="col-9">
-                                    <span class="text-muted"><b>Krisna diva</b> | (+62) 89658444101</span>
-                                </div>
-                                <div class="col-2 d-flex justify-content-end">
-                                    <button class="badge bg-primary">Ubah</button>
-                                </div>
-                            </div>
-                            <div class="row justify-content-center">
-                                <div class="col-10">
-                                    <span>Jalan Bunga Wijaya Kesuma II No.99 B, Padang Bulan Selayang Ii, Medan Selayang
-                                        MEDAN SELAYANG, KOTA MEDAN, SUMATERA UTARA, ID, 20131</span>
-                                </div>
-                            </div>
-                            <hr>
-                        </div>
-                        <div class="col-12">
-                            <div class="row">
-                                <div class="col-1">
-                                    <input type="radio" class="form-check" name="address">
-                                </div>
-                                <div class="col-9">
-                                    <span class="text-muted"><b>Krisna diva</b> | (+62) 89658444101</span>
-                                </div>
-                                <div class="col-2 d-flex justify-content-end">
-                                    <button class="badge bg-primary">Ubah</button>
-                                </div>
-                            </div>
-                            <div class="row justify-content-center">
-                                <div class="col-10">
-                                    <span>Jalan Bunga Wijaya Kesuma II No.99 B, Padang Bulan Selayang Ii, Medan Selayang
-                                        MEDAN SELAYANG, KOTA MEDAN, SUMATERA UTARA, ID, 20131</span>
-                                </div>
-                            </div>
-                            <hr>
-                        </div>
-                        <div class="col-12">
-                            <div class="row">
-                                <div class="col-1">
-                                    <input type="radio" class="form-check" name="address">
-                                </div>
-                                <div class="col-9">
-                                    <span class="text-muted"><b>Krisna diva</b> | (+62) 89658444101</span>
-                                </div>
-                                <div class="col-2 d-flex justify-content-end">
-                                    <button class="badge bg-primary">Ubah</button>
-                                </div>
-                            </div>
-                            <div class="row justify-content-center">
-                                <div class="col-10">
-                                    <span>Jalan Bunga Wijaya Kesuma II No.99 B, Padang Bulan Selayang Ii, Medan Selayang
-                                        MEDAN SELAYANG, KOTA MEDAN, SUMATERA UTARA, ID, 20131</span>
-                                </div>
-                            </div>
-                            <hr>
-                        </div>
-                        <div class="col-12">
-                            <div class="row">
-                                <div class="col-1">
-                                    <input type="radio" class="form-check" name="address">
-                                </div>
-                                <div class="col-9">
-                                    <span class="text-muted"><b>Krisna diva</b> | (+62) 89658444101</span>
-                                </div>
-                                <div class="col-2 d-flex justify-content-end">
-                                    <button class="badge bg-primary">Ubah</button>
-                                </div>
-                            </div>
-                            <div class="row justify-content-center">
-                                <div class="col-10">
-                                    <span>Jalan Bunga Wijaya Kesuma II No.99 B, Padang Bulan Selayang Ii, Medan Selayang
-                                        MEDAN SELAYANG, KOTA MEDAN, SUMATERA UTARA, ID, 20131</span>
-                                </div>
-                            </div>
-                            <hr>
-                        </div>
-                        <button class="btn btn-primary w-25">Tambah Alamat Baru</button>
+                        </div> 
+                        @endforeach
+                        <a class="btn btn-primary w-25" href="{{ route('address.create') }}">Tambah Alamat Baru</a>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-
+    
 
 @endsection

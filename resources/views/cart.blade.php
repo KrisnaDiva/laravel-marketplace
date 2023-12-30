@@ -164,7 +164,7 @@
                                             </div>
                                             @if ($user->cart->cartItems->isNotEmpty())
                                             <div class="col-6 text-end">
-                                                <form method="post" action="{{ route('checkout') }}">
+                                                <form method="get" action="{{ route('checkout') }}">
                                                     @csrf
                                                     
                                                         <button type="submit" class="btn btn-primary">Checkout</button>

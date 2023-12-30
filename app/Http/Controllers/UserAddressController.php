@@ -91,4 +91,10 @@ class UserAddressController extends Controller
         $this->userAddressService->setMainAddress($id);
         return back()->with('success','Main Address Has Changed');
     }
+    public function setMainWithoutParam(Request $request)
+    {
+        $this->authorize('update',$this->userAddressService->getAddress($request->address));
+        $this->userAddressService->setMainAddress($request->address);
+        return back()->with('success','Main Address Has Changed');
+    }
 }

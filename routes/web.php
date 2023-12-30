@@ -44,9 +44,10 @@ Route::middleware(['auth','verified'])->group(function(){
             Route::patch('/decrement/{cartItem}','decrement')->name('cartItem.decrement');
         });
         Route::patch('address/setMain/{userAddress}',[UserAddressController::class,'setMain'])->name('address.setMain');
+        Route::patch('address/setMain/',[UserAddressController::class,'setMainWithoutParam'])->name('address.setMainWithoutParam');
         Route::resource('/address',UserAddressController::class);
 
-        Route::post('/checkout',[CheckoutController::class,'store'])->name('checkout');
+        Route::get('/checkout',[CheckoutController::class,'store'])->name('checkout');
 
         Route::get('/get-cities/{province}', [CityController::class,'getCities']);
 });
