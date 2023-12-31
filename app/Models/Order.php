@@ -7,20 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class UserAddress extends Model
+class Order extends Model
 {
     use HasFactory;
     protected $guarded=['id'];
+    public function details():HasMany{
+        return $this->hasMany(OrderDetail::class);
+    }
     public function user():BelongsTo{
         return $this->belongsTo(User::class);
     }
-    public function province():BelongsTo{
-        return $this->belongsTo(Province::class);
+    public function store():BelongsTo{
+        return $this->belongsTo(Store::class);
     }
-    public function city():BelongsTo{
-        return $this->belongsTo(City::class);
-    }
-    public function orders():HasMany{
-        return $this->hasMany(Order::class);
+    public function address():BelongsTo{
+        return $this->belongsTo(UserAddress::class);
     }
 }

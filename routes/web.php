@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Store\ProductController;
 use App\Http\Controllers\UserAddressController;
@@ -47,7 +48,8 @@ Route::middleware(['auth','verified'])->group(function(){
         Route::patch('address/setMain/',[UserAddressController::class,'setMainWithoutParam'])->name('address.setMainWithoutParam');
         Route::resource('/address',UserAddressController::class);
 
-        Route::get('/checkout',[CheckoutController::class,'store'])->name('checkout');
+        Route::get('/checkout',[CheckoutController::class,'index'])->name('checkout');
+        Route::post('/order',[OrderController::class,'store'])->name('order');
 
         Route::get('/get-cities/{province}', [CityController::class,'getCities']);
 });

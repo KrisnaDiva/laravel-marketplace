@@ -18,6 +18,8 @@
         @endif
     </div>
 </div>
+<form action="{{ route('order') }}" method="POST">
+    @csrf
     <div class="row">
         <div class="col-12 shadow p-5">
             <div class="row mb-3">
@@ -35,7 +37,7 @@
                         <span class="border border-danger text-danger px-1">Main</span>
                     </div>
                     <div>
-                        <button class="badge bg-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Ubah</button>
+                        <button class="badge bg-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" type="button">Ubah</button>
                     </div>
                 </div>
             </div>
@@ -62,7 +64,7 @@
             @endphp
             <div class="row">
                 @foreach ($groupedCarts as $storeCarts)
-                    @if (count($storeCarts) > 1)
+@if (count($storeCarts) > 1)
                         <div class="row">
                             <hr>
                             <div class="col-12">
@@ -72,6 +74,7 @@
 
 
                         @foreach ($storeCarts as $cart)
+                        <input type="number" value="{{ $cart->id }}" name="cart{{ $cart->id }}">
                             {{-- @php
                                 $couriers = ['jne', 'tiki', 'pos'];
                                 $ongkirResults = [];
@@ -112,7 +115,6 @@
                             </div>
                             @php
                                 $cartsTotal += $cart->product->price * $cart->quantity;
-
                             @endphp
                         @endforeach
                         <div class="row mt-3 align-items-center">
@@ -129,10 +131,10 @@
                             </div>
                             <div class="col-4 border-end border-dark">
                                 <select id="shippingOption{{ $cart->id }}" class="form-select"
-                                    aria-label="Default select example">
+                                    aria-label="Default select example" name="cost{{ $cart->id }}[shippingCost]">
                                     <option value="0">Open this select menu</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
+                                    <option value="1">inu</option>
+                                    <option value="2">ais</option>
                                     {{-- @foreach ($ongkirResults as $results)
                                         @foreach ($results as $item)
                                             @foreach ($item->costs as $cost)
@@ -217,7 +219,7 @@
                             </div>
 
                         </div>
-                    @else
+@else
                         @foreach ($storeCarts as $cart)
                             {{-- @php
                                 $couriers = ['jne', 'tiki', 'pos'];
@@ -238,6 +240,7 @@
                             <div class="row">
                                 <hr>
                                 <div class="col-12">
+                                    <input type="number" value="{{ $cart->id }}" name="cart{{ $cart->id }}">
                                     <span>{{ $cart->product->store->name }}</span>
                                 </div>
                             </div>
@@ -274,10 +277,10 @@
                                 </div>
                                 <div class="col-4 border-end border-dark">
                                     <select id="shippingOption{{ $cart->id }}" class="form-select"
-                                        aria-label="Default select example">
+                                        aria-label="Default select example" name="cost{{ $cart->id }}[shippingCost]">
                                         <option value="0">Open this select menu</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
+                                        <option value="1">inu</option>
+                                        <option value="2">ais</option>
                                         {{-- @foreach ($ongkirResults as $results)
                                             @foreach ($results as $item)
                                                 @foreach ($item->costs as $cost)
@@ -382,6 +385,7 @@
             </div>
         </div>
     </div>
+</form>
     <!-- Modal -->
     <div class="modal fade modal-lg" id="exampleModal" width="100%">
         <div class="modal-dialog modal-dialog-scrollable">

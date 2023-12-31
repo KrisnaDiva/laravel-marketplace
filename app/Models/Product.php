@@ -25,8 +25,11 @@ class Product extends Model
     {
         return $this->belongsToMany(Image::class,'product_images')->withPivot(["created_at","updated_at"]);
     }
-    public function cart():HasOne{
-        return $this->hasOne(Cart::class);
+    public function cartItem():HasOne{
+        return $this->hasOne(CartItem::class,'product_id','id');
+    }
+    public function orderDetail ():HasOne{
+        return $this->hasOne(OrderDetail::class,'product_id','id');
     }
   
 }
