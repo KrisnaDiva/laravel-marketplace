@@ -48,8 +48,11 @@ Route::middleware(['auth','verified'])->group(function(){
         Route::patch('address/setMain/',[UserAddressController::class,'setMainWithoutParam'])->name('address.setMainWithoutParam');
         Route::resource('/address',UserAddressController::class);
 
-        Route::get('/checkout',[CheckoutController::class,'index'])->name('checkout');
+        Route::get('/checkout',[CheckoutController::class,'index'])->name('checkout')->middleware('hasAddress');
         Route::post('/order',[OrderController::class,'store'])->name('order');
+        
+        Route::get('/my-order/hasPaid',[OrderController::class,'hasPaid'])->name('order.hasPaid');
+        Route::get('/my-order/hasntPaid',[OrderController::class,'hasntPaid'])->name('order.hasntPaid');
 
         Route::get('/get-cities/{province}', [CityController::class,'getCities']);
 });

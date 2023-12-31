@@ -17,9 +17,21 @@ class OrderController extends Controller
     public function __construct(private UserRepository $user, private UserAddressService $userAddress)
     {
     }
-    public function index()
+    public function hasPaid()
     {
-        //
+        $user=$this->user->getUser();
+        return view('profile.my-order',[
+            'user'=>$user,
+            'orders'=>$user->orders->where('has_paid',1)
+        ]);
+    }
+    public function hasntPaid()
+    {
+        $user=$this->user->getUser();
+        return view('profile.my-order',[
+            'user'=>$user,
+            'orders'=>$user->orders->where('has_paid',0)
+        ]);
     }
 
     /**
@@ -53,7 +65,7 @@ class OrderController extends Controller
             $index = substr($key, 4);
             $item[] = CartItem::find($index);
         }
-
+        
         foreach ($costInputs as $key => $costt) {
             $index = substr($key, 4);
             $cost[$index] = $costt['shippingCost']; 
@@ -73,6 +85,7 @@ class OrderController extends Controller
         foreach ($storeItems as $key => $items) {
             $order = Order::create([
                 'shipping_cost' => $items['shippingCost'],
+                'has_paid'=>1,
                 'store_id' => $key,
                 'user_id' => $user->id,
                 'address_id' => $this->userAddress->getMainAddress()->id
@@ -85,8 +98,14 @@ class OrderController extends Controller
                     'product_id' => $item->product->id,
                     'order_id' => $order->id
                 ]);
+                //janga lupa kurangin stok
             }
         }
+        foreach ($cartInputs as $cart){
+            $cart=CartItem::find($cart);
+            $cart->delete();
+        }
+        return redirect()->route('order.hasPaid');
     }
 
     /**

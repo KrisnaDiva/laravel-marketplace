@@ -16,6 +16,19 @@
                 }, 5000);
             </script>
         @endif
+        @if (session()->has('error'))
+            <div class="position-fixed top-2 start-50 translate-middle-x" style="z-index: 1050;">
+                <div id="errorAlert" class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+            <script>
+                setTimeout(function() {
+                    $('#successAlert').alert('close');
+                }, 5000);
+            </script>
+        @endif
     </div>
 </div>
     <div class="row">

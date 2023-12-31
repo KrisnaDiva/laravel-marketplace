@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('store_id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('address_id');
+            $table->boolean('has_paid');
             $table->timestamps();
         });
     }

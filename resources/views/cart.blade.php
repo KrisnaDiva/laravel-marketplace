@@ -197,13 +197,14 @@
                 hiddenInputsContainer.appendChild(hiddenInput);
             } else {
                 // If the checkbox is unchecked, remove the corresponding hidden input
-                var hiddenInputToRemove = hiddenInputsContainer.querySelector('input[name="cart[' + checkbox.value + ']"]');
+                var hiddenInputToRemove = hiddenInputsContainer.querySelector('input[name="carts[' + checkbox.value + ']"]');
                 if (hiddenInputToRemove) {
                     hiddenInputToRemove.parentNode.removeChild(hiddenInputToRemove);
                 }
             }
         }
     </script>
+    
     
     <script>
         function handleInputChange() {

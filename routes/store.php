@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Store\OrderController;
 use App\Http\Controllers\Store\ProductController;
 use App\Http\Controllers\Store\StoreAddressController;
 use App\Http\Controllers\Store\StoreController;
@@ -14,7 +15,7 @@ Route::middleware(['auth','verified'])->prefix('/store')->group(function(){
         Route::put('/{address}',[StoreAddressController::class,'update'])->name('store.updateAddress');
         Route::resource('products',ProductController::class)->except(['show']);
         Route::delete('products/{product}/images/{image}',[ProductController::class,'destroyImage'])->name('products.destroyImage');
-
+        Route::get('/order/{hasPaid}',[OrderController::class,'index'])->name('order.index');
     });
 
 

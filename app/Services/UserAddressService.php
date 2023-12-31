@@ -16,7 +16,13 @@ class UserAddressService{
     }
     public function createAddress(array $data){
         $data['user_id']=$this->user->getUserId();
-        $data['isMain']=0;
+
+        if(count($this->user->getUser()->addresses)==0){
+            $data['isMain']=1;
+        }else{
+            $data['isMain']=0;
+        }
+        
         return $this->userAddressRepository->create($data);
     }
     public function getAddress($id){

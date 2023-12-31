@@ -8,5 +8,4 @@
     @endif
     @include('profile.partials.update-profile')
     @include('profile.partials.update-password')
-    @include('profile.partials.delete-user')
 @endsection

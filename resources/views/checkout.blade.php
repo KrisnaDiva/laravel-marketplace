@@ -74,7 +74,7 @@
 
 
                         @foreach ($storeCarts as $cart)
-                        <input type="number" value="{{ $cart->id }}" name="cart{{ $cart->id }}">
+                        <input type="hidden" value="{{ $cart->id }}" name="cart{{ $cart->id }}">
                             {{-- @php
                                 $couriers = ['jne', 'tiki', 'pos'];
                                 $ongkirResults = [];
@@ -240,7 +240,7 @@
                             <div class="row">
                                 <hr>
                                 <div class="col-12">
-                                    <input type="number" value="{{ $cart->id }}" name="cart{{ $cart->id }}">
+                                    <input type="hidden" value="{{ $cart->id }}" name="cart{{ $cart->id }}">
                                     <span>{{ $cart->product->store->name }}</span>
                                 </div>
                             </div>

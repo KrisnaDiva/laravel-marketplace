@@ -36,6 +36,7 @@
             <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Profile</a></li>
             <li><a class="dropdown-item" href="{{ route('address.index') }}">Address</a></li>
             <li><a class="dropdown-item" href="{{ route('store.index') }}">Store</a></li>
+            <li><a class="dropdown-item" href="{{ route('order.hasPaid') }}">My Order</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>
               <form action="{{ route('logout') }}" method="POST">
