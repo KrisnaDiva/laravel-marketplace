@@ -8,7 +8,9 @@ use App\Models\OrderDetail;
 use App\Models\Product;
 use App\Repositories\UserRepository;
 use App\Services\UserAddressService;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -57,6 +59,7 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+
         $user = $this->user->getUser();
 
         $cartInputs = array_filter($request->input(), function ($key) {
@@ -92,34 +95,46 @@ class OrderController extends Controller
             }
         }
         
-        foreach ($storeItems as $key => $items) {
-            $order = Order::create([
-                'shipping_cost' => $items['shippingCost'],
-                'has_paid'=>1,
-                'store_id' => $key,
-                'user_id' => $user->id,
-                'address_id' => $this->userAddress->getMainAddress()->id
-            ]);
-            unset($items['shippingCost']);
-            foreach ($items as $item) {
-                $detail=OrderDetail::create([
-                    'quantity' => $item->quantity,
-                    'subtotal' => $item->quantity * $item->product->price,
-                    'product_id' => $item->product->id,
-                    'order_id' => $order->id
+        try{
+            DB::beginTransaction();
+            foreach ($storeItems as $key => $items) {
+                $order = Order::create([
+                    'shipping_cost' => $items['shippingCost'],
+                    'has_paid'=>0,
+                    'store_id' => $key,
+                    'user_id' => $user->id,
+                    'address_id' => $this->userAddress->getMainAddress()->id
                 ]);
-                $product=Product::find($detail->product_id);
-                $quantity=$detail->quantity;
-                $stock=$product->stock;
-                $product->stock=$stock-$quantity;
-                $product->save();
+                unset($items['shippingCost']);
+                foreach ($items as $item) {
+                    if ($item->quantity > $item->product->stock) {
+                        DB::rollBack();
+                        return redirect()->route('cart.index')->with('error', 'Failed to create order');
+                    }
+                    $detail=OrderDetail::create([
+                        'quantity' => $item->quantity,
+                        'subtotal' => $item->quantity * $item->product->price,
+                        'product_id' => $item->product->id,
+                        'order_id' => $order->id
+                    ]);
+                    $product=Product::find($detail->product_id);
+                    $quantity=$detail->quantity;
+                    $stock=$product->stock;
+                    $product->stock=$stock-$quantity;
+                    $product->save();
+                }
             }
+            foreach ($cartInputs as $cart){
+                $cart=CartItem::find($cart);
+                $cart->delete();
+            }
+            DB::commit();
+            return redirect()->route('order.hasPaid');
+        }catch(QueryException $e){
+            DB::rollBack();
+            return redirect()->route('cart.index')->with('error', 'Failed to create order: ' . $e->getMessage());
         }
-        foreach ($cartInputs as $cart){
-            $cart=CartItem::find($cart);
-            $cart->delete();
-        }
-        return redirect()->route('order.hasPaid');
+       
     }
 
     /**

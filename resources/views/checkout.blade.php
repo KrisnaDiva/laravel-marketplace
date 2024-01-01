@@ -119,13 +119,7 @@
                         @endforeach
                         <div class="row mt-3 align-items-center">
                             <hr>
-                            <div class="col-1">
-                                <label for="">Pesan:</label>
-                            </div>
-                            <div class="col-4 border-end border-dark">
-                                <input type="text" name="" id="" class="form-control"
-                                    placeholder="(Opsional) tinggalkan pesan ke penjual">
-                            </div>
+                            <div class="col-5"></div>
                             <div class="col-1">
                                 <label for="">Pengiriman:</label>
                             </div>
@@ -265,13 +259,7 @@
                             </div>
                             <div class="row mt-3 align-items-center">
                                 <hr>
-                                <div class="col-1">
-                                    <label for="">Pesan:</label>
-                                </div>
-                                <div class="col-4 border-end border-dark">
-                                    <input type="text" name="" id="" class="form-control"
-                                        placeholder="(Opsional) tinggalkan pesan ke penjual">
-                                </div>
+                                <div class="col-5"></div>
                                 <div class="col-1">
                                     <label for="">Pengiriman:</label>
                                 </div>
@@ -435,6 +423,20 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            $('form').submit(function(e) {
+                var selectedOptions = $('[id^="shippingOption"]').filter(function() {
+                    return $(this).val() === '0';
+                });
+    
+                if (selectedOptions.length > 0) {
+                    e.preventDefault();
+                    alert('Silakan pilih opsi pengiriman untuk semua produk sebelum melakukan pembayaran.');
+                }
+            });
+        });
+    </script>
     
 
 @endsection

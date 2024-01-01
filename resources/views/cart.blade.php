@@ -167,7 +167,8 @@
                                                 <form method="get" action="{{ route('checkout') }}">
                                                     @csrf
                                                     
-                                                        <button type="submit" class="btn btn-primary">Checkout</button>
+                                                    <button type="submit" id="checkoutButton" class="btn btn-primary" style="display: none;">Checkout</button>
+                                                    <div id="hiddenInputsContainer"></div>
                                                     
                                                     <div id="hiddenInputsContainer"></div>
                                                 </form>
@@ -187,6 +188,7 @@
     <script>
         function handleCheckboxClick(checkbox) {
             var hiddenInputsContainer = document.getElementById('hiddenInputsContainer');
+            var checkoutButton = document.getElementById('checkoutButton');
     
             // Create hidden input for the clicked checkbox
             if (checkbox.checked) {
@@ -202,8 +204,14 @@
                     hiddenInputToRemove.parentNode.removeChild(hiddenInputToRemove);
                 }
             }
+    
+            // Check if there are any checkboxes checked
+            var anyCheckboxChecked = document.querySelector('input[type="checkbox"]:checked');
+            // Update the visibility of the Checkout button
+            checkoutButton.style.display = anyCheckboxChecked ? 'inline-block' : 'none';
         }
     </script>
+    
     
     
     <script>

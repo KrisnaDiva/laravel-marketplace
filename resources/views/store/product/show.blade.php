@@ -62,7 +62,7 @@
                                         </div> --}}
                                     </div>
                                 </div>
-                                @if ($user->addresses->where('isMain', 1)->first())
+                                {{-- @if ($user->addresses->where('isMain', 1)->first())
                                     @php
                                         $couriers = ['jne', 'tiki', 'pos'];
                                         $ongkirResults = [];
@@ -111,7 +111,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                @endif
+                                @endif --}}
                                 <form action="{{ route('cart.store', $product->id) }}" method="POST">
                                     @csrf
                                     <div class="form-group row">
