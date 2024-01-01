@@ -40,7 +40,7 @@ Route::middleware(['auth','verified'])->group(function(){
             Route::post('/{product}','store')->name('cart.store');
         });
         Route::controller(CartItemController::class)->prefix('/cartItem')->group(function (){
-            Route::delete('{cartItem}','destroy')->name('cartItem.destroy');
+            Route::delete('/{cartItem}','destroy')->name('cartItem.destroy');
             Route::patch('/increment/{cartItem}','increment')->name('cartItem.increment');
             Route::patch('/decrement/{cartItem}','decrement')->name('cartItem.decrement');
         });

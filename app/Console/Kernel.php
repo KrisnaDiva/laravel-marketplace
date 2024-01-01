@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('clean:delete-order-hasnt-pay')->everySecond(); // Adjust the schedule as needed
     }
 
     /**

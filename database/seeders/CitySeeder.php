@@ -15,7 +15,7 @@ class CitySeeder extends Seeder
     public function run(): void
     {
         $response = Http::withHeaders([
-            'key'=>'9f3bea8727a27ab30805a9c7f5c89739'
+            'key'=>'c02b93cf40f1b5bc247494c12cae4148'
         ])->get('https://api.rajaongkir.com/starter/city');
         $content = json_decode($response,false);
         $cities=$content->rajaongkir->results;

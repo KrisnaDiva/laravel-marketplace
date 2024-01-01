@@ -32,7 +32,8 @@ class DatabaseSeeder extends Seeder
             ProductConditionSeeder::class,
             ProductSeeder::class,
             CartSeeder::class,
-            CartItemSeeder::class
+            CartItemSeeder::class,
+            OrderSeeder::class
         ]);
     }
 }

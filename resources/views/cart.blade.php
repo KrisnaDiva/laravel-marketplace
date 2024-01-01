@@ -79,10 +79,10 @@
                                                                 </button>
                                                             @endif
 
-                                                            <input type="number" class="form-control" id="quantity"
+                                                            <input type="number" class="form-control" id="quantity{{ $item->id }}"
                                                                 name="quantity" min="1"
                                                                 max="{{ $item->product->stock }}"
-                                                                value="{{ $item->quantity }}" oninput="handleInputChange()">
+                                                                value="{{ $item->quantity }}" oninput="handleInputChange({{ $item->id }})">
 
                                                             @if ($item->quantity >= $item->product->stock)
                                                                 <button class="btn "><i
@@ -183,7 +183,7 @@
             </div>
         </div>
     </section>
-
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
         function handleCheckboxClick(checkbox) {
             var hiddenInputsContainer = document.getElementById('hiddenInputsContainer');
@@ -207,8 +207,8 @@
     
     
     <script>
-        function handleInputChange() {
-            var inputElement = document.getElementById("quantity");
+        function handleInputChange(id) {
+            var inputElement = document.getElementById("quantity"+id);
             var maxValue = parseInt(inputElement.max);
 
             if (inputElement.value > maxValue) {

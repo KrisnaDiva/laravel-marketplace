@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Product;
 use App\Repositories\UserRepository;
 use App\Services\UserAddressService;
 use Illuminate\Http\Request;
@@ -16,6 +17,15 @@ class OrderController extends Controller
      */
     public function __construct(private UserRepository $user, private UserAddressService $userAddress)
     {
+    }
+    public function index(Request $request,$id)
+    {
+       
+        $user=$this->user->getUser();
+        return view('store.order.index',[
+            'user'=>$user,
+            'orders'=>$user->store->orders->where('has_paid',$id)
+        ]); 
     }
     public function hasPaid()
     {
@@ -92,13 +102,17 @@ class OrderController extends Controller
             ]);
             unset($items['shippingCost']);
             foreach ($items as $item) {
-                OrderDetail::create([
+                $detail=OrderDetail::create([
                     'quantity' => $item->quantity,
                     'subtotal' => $item->quantity * $item->product->price,
                     'product_id' => $item->product->id,
                     'order_id' => $order->id
                 ]);
-                //janga lupa kurangin stok
+                $product=Product::find($detail->product_id);
+                $quantity=$detail->quantity;
+                $stock=$product->stock;
+                $product->stock=$stock-$quantity;
+                $product->save();
             }
         }
         foreach ($cartInputs as $cart){

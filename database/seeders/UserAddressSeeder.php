@@ -33,5 +33,8 @@ class UserAddressSeeder extends Seeder
                 'user_id' => 1
             ]);
         }
+        $address=UserAddress::find(1)->first();
+        $address->isMain=1;
+        $address->save();
     }
 }

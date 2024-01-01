@@ -12,8 +12,22 @@
   @foreach ($orders as $order)
   <div class="row mt-3 shadow p-5">
     <div class="col-12">
-        <div class="row">
-            <small class="text-muted">{{ $order->created_at->format('d M Y') }}</small>
+        <div class="row ">
+            @if ($order->has_paid==1)               
+            <div class="col-12 text-start">
+                <small class="text-muted">{{ $order->created_at->format('d M Y') }}</small>
+            </div>
+            @else
+            <div class="col-12 text-end">
+                <small class="text-muted" id="countdown">
+                    Pay Before {{ $order->created_at->addDay()->format('d M Y H:i') }}
+                </small>
+                
+                <script>
+                    var targetTimestamp = {{ $order->created_at->addDay()->timestamp * 1000 }};
+                </script>
+            </div>
+            @endif
         </div>
         <div class="row">
             <span>{{ $order->store->name }}</span>
