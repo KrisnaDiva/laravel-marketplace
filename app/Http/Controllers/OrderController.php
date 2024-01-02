@@ -8,6 +8,7 @@ use App\Models\OrderDetail;
 use App\Models\Product;
 use App\Repositories\UserRepository;
 use App\Services\UserAddressService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -62,6 +63,13 @@ class OrderController extends Controller
         ]);
     }
 
+    public function userPrint(Order $order)
+    {
+        
+    	$pdf = PDF::loadview('profile.pdf',['order'=>$order]);
+        $pdf->setPaper('A4', 'landscape');
+    	return $pdf->download('transaction-detail.pdf');
+    }
     /**
      * Show the form for creating a new resource.
      */

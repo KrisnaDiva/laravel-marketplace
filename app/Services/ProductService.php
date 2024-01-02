@@ -68,8 +68,10 @@ class ProductService{
                 $item->delete();
             }
             foreach($productModel->orderDetails as $detail){
-                if($detail->order->has_paid==0){
-                    $detail->order->delete();
+                if($detail->order){
+                    if($detail->order->has_paid==0){
+                        $detail->order->delete();
+                    }
                 }
             }
             // foreach ($productModel->images as $image) {

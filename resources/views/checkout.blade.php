@@ -75,7 +75,7 @@
 
                         @foreach ($storeCarts as $cart)
                         <input type="hidden" value="{{ $cart->id }}" name="cart{{ $cart->id }}">
-                            {{-- @php
+                            @php
                                 $couriers = ['jne', 'tiki', 'pos'];
                                 $ongkirResults = [];
                                 $totalWeight = $storeCarts->sum(function ($cart) {
@@ -93,7 +93,7 @@
                                     $content = json_decode($responseCost, false);
                                     $ongkirResults[$courier] = $content->rajaongkir->results;
                                 }
-                            @endphp --}}
+                            @endphp
                             <div class="row mt-3 align-items-center">
                                 <div class="col-6">
                                     <div class="row align-items-center">
@@ -129,7 +129,7 @@
                                     <option value="0">Open this select menu</option>
                                     <option value="1">inu</option>
                                     <option value="2">ais</option>
-                                    {{-- @foreach ($ongkirResults as $results)
+                                    @foreach ($ongkirResults as $results)
                                         @foreach ($results as $item)
                                             @foreach ($item->costs as $cost)
                                                 @php
@@ -151,7 +151,7 @@
                                                 </option>
                                             @endforeach
                                         @endforeach
-                                    @endforeach --}}
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="col-2 text-center">
@@ -215,7 +215,7 @@
                         </div>
 @else
                         @foreach ($storeCarts as $cart)
-                            {{-- @php
+                            @php
                                 $couriers = ['jne', 'tiki', 'pos'];
                                 $ongkirResults = [];
                                 foreach ($couriers as $courier) {
@@ -230,7 +230,7 @@
                                     $content = json_decode($responseCost, false);
                                     $ongkirResults[$courier] = $content->rajaongkir->results;
                                 }
-                            @endphp --}}
+                            @endphp
                             <div class="row">
                                 <hr>
                                 <div class="col-12">
@@ -269,7 +269,7 @@
                                         <option value="0">Open this select menu</option>
                                         <option value="1">inu</option>
                                         <option value="2">ais</option>
-                                        {{-- @foreach ($ongkirResults as $results)
+                                        @foreach ($ongkirResults as $results)
                                             @foreach ($results as $item)
                                                 @foreach ($item->costs as $cost)
                                                     @php
@@ -291,7 +291,7 @@
                                                     </option>
                                                 @endforeach
                                             @endforeach
-                                        @endforeach --}}
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-2 text-center">
