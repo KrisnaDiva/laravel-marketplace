@@ -42,6 +42,9 @@ class CartController extends Controller
             DB::beginTransaction();
             $user=$this->user->getUser();
             $product=$this->productService->getProduct($id);
+            if(!$product){
+                return back()->with('error', 'Product not found.');
+            }
             if ($product->stock === 0) {
                 return back()->with('error', 'Product is out of stock.');
             }
