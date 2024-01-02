@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
     protected $guarded=['id'];
     public function store():BelongsTo{
         return $this->belongsTo(Store::class);
@@ -25,8 +26,8 @@ class Product extends Model
     {
         return $this->belongsToMany(Image::class,'product_images')->withPivot(["created_at","updated_at"]);
     }
-    public function cartItem():HasOne{
-        return $this->hasOne(CartItem::class,'product_id','id');
+    public function cartItems():HasMany{
+        return $this->hasMany(CartItem::class,'product_id','id');
     }
     public function orderDetail ():HasOne{
         return $this->hasOne(OrderDetail::class,'product_id','id');

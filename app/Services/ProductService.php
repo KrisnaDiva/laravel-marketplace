@@ -64,6 +64,9 @@ class ProductService{
         $productModel = $this->getProduct($id);
         try {
             DB::beginTransaction();
+            foreach($productModel->cartItems as $item){
+                $item->delete();
+            }
             foreach ($productModel->images as $image) {
                 Storage::delete($image->url);
                 $imageModel = Image::where('url', $image->url)->first();
