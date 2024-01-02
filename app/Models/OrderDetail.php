@@ -16,4 +16,7 @@ class OrderDetail extends Model
     public function product():BelongsTo{
         return $this->belongsTo(Product::class);
     }
+    public function productWithTrashed():BelongsTo{
+        return $this->belongsTo(Product::class,'product_id','id')->withTrashed();
+    }
 }

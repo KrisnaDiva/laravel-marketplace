@@ -67,12 +67,17 @@ class ProductService{
             foreach($productModel->cartItems as $item){
                 $item->delete();
             }
-            foreach ($productModel->images as $image) {
-                Storage::delete($image->url);
-                $imageModel = Image::where('url', $image->url)->first();
-                $imageModel->products()->detach($id);
-                $imageModel->delete();
-            }    
+            foreach($productModel->orderDetails as $detail){
+                if($detail->order->has_paid==0){
+                    $detail->order->delete();
+                }
+            }
+            // foreach ($productModel->images as $image) {
+            //     Storage::delete($image->url);
+            //     $imageModel = Image::where('url', $image->url)->first();
+            //     $imageModel->products()->detach($id);
+            //     $imageModel->delete();
+            // }    
             $this->productRepository->delete($id);
             DB::commit();
         } catch (QueryException $error) {

@@ -29,8 +29,8 @@ class Product extends Model
     public function cartItems():HasMany{
         return $this->hasMany(CartItem::class,'product_id','id');
     }
-    public function orderDetail ():HasOne{
-        return $this->hasOne(OrderDetail::class,'product_id','id');
+    public function orderDetails():HasMany{
+        return $this->hasMany(OrderDetail::class,'product_id','id');
     }
   
 }

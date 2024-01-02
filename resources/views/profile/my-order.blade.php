@@ -39,13 +39,13 @@
         @foreach ($order->details as $detail)           
         <div class="row mt-2">
             <div class="col-1 ">
-                <img src="{{ asset('storage/' . $detail->product->images->first()->url) }}"
-                class="img-fluid rounded-3 border border-dark" alt="{{ $detail->product->name }}" width="100%">
+                <img src="{{ asset('storage/' . $detail->productWithTrashed->images->first()->url) }}"
+                class="img-fluid rounded-3 border border-dark" alt="{{ $detail->productWithTrashed->name }}" width="100%">
             </div>
             <div class="col-9 d-flex align-items-center">
                 <div class="row ">
                     <div class="col-12">
-                        <span>{{ $detail->product->name }}</span>
+                        <span>{{ $detail->productWithTrashed->name }}</span>
                     </div>
                     <div class="col-12">
                         <span>&times;{{ $detail->quantity }}</span>

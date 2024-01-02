@@ -101,6 +101,9 @@ class OrderController extends Controller
         }
 
         foreach ($item as $cartItem) {
+            if(!isset($cartItem->product)){
+                return redirect()->route('cart.index')->with('error', 'Failed to create order');
+            }
             $storeId = $cartItem->product->store_id;
             if (!isset($storeItems[$storeId])) {
                 $storeItems[$storeId] = [];
@@ -123,6 +126,7 @@ class OrderController extends Controller
                 ]);
                 unset($items['shippingCost']);
                 foreach ($items as $item) {
+                   
                     if ($item->quantity > $item->product->stock) {
                         DB::rollBack();
                         return redirect()->route('cart.index')->with('error', 'Failed to create order');
