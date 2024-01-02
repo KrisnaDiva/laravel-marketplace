@@ -20,13 +20,19 @@ class OrderController extends Controller
     public function __construct(private UserRepository $user, private UserAddressService $userAddress)
     {
     }
-    public function index(Request $request,$id)
+    public function index(Request $request,$id=null)
     {
-       
         $user=$this->user->getUser();
+        if ($id !== null) {
+            $orders = $user->store->orders->where('has_paid', $id);
+        }else{
+            $orders=Order::onlyTrashed()
+            ->where('store_id', $user->store->id)
+            ->where('has_paid', 0)->get();
+        }
         return view('store.order.index',[
             'user'=>$user,
-            'orders'=>$user->store->orders->where('has_paid',$id)
+            'orders'=>$orders
         ]); 
     }
     public function hasPaid()

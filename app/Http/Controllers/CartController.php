@@ -42,13 +42,16 @@ class CartController extends Controller
             DB::beginTransaction();
             $user=$this->user->getUser();
             $product=$this->productService->getProduct($id);
+            if ($product->stock === 0) {
+                return back()->with('error', 'Product is out of stock.');
+            }
             if(!$user->cart){
                 $cart=Cart::create([
                     'user_id'=>$user->id
                 ]);
             }else{
                 $cart=$user->cart;
-            }
+            }            
             $cartItem=CartItem::where('cart_id',$cart->id)->where('product_id',$product->id)->first();
             $request->validate([
                 'quantity'=>'required',

@@ -15,7 +15,7 @@ Route::middleware(['auth','verified'])->prefix('/store')->group(function(){
         Route::put('/{address}',[StoreAddressController::class,'update'])->name('store.updateAddress');
         Route::resource('products',ProductController::class)->except(['show']);
         Route::delete('products/{product}/images/{image}',[ProductController::class,'destroyImage'])->name('products.destroyImage');
-        Route::get('/order/{hasPaid}',[OrderController::class,'index'])->name('order.index');
+        Route::get('/order/{id?}',[OrderController::class,'index'])->name('order.index');
     });
 
 

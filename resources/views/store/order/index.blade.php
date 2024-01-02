@@ -7,6 +7,9 @@
     <li class="nav-item">
       <a class="nav-link {{ Route::is('order.index',0) ? 'active' :'' }}" href="{{ route('order.index',0) }}">Has'nt Paid</a>
     </li>
+    <li class="nav-item">
+      <a class="nav-link {{ Route::is('order.index') ? 'active' :'' }}" href="{{ route('order.index') }}">Canceled</a>
+    </li>
   </ul>
   <div class="row justify-content-center">
     <div class="col-10">
