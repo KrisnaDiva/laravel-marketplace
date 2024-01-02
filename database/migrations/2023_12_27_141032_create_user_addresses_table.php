@@ -24,6 +24,7 @@ return new class extends Migration
             $table->boolean('isMain');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
