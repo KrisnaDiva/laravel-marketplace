@@ -28,7 +28,7 @@ class DeleteOrderHasntPay extends Command
      */
     public function handle()
     {
-        $threshold = now()->subDay();
+        $threshold = now()->subMinute();
         
         $ordersToDelete = Order::where('has_paid', 0)
             ->where('created_at', '<', $threshold)->get();
@@ -40,7 +40,6 @@ class DeleteOrderHasntPay extends Command
                 $stock=$product->stock;
                 $product->stock=$stock+$quantity;
                 $product->save();
-                $detail->delete();
             }
             $order->delete();
         }

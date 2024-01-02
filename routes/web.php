@@ -53,6 +53,8 @@ Route::middleware(['auth','verified'])->group(function(){
         
         Route::get('/my-order/hasPaid',[OrderController::class,'hasPaid'])->name('order.hasPaid');
         Route::get('/my-order/hasntPaid',[OrderController::class,'hasntPaid'])->name('order.hasntPaid');
+        Route::get('/my-order/cancel',[OrderController::class,'cancel'])->name('order.cancel');
+        Route::delete('/my-order/{order}',[OrderController::class,'destroy'])->name('order.destroy');
 
         Route::get('/get-cities/{province}', [CityController::class,'getCities']);
 });

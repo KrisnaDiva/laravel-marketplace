@@ -8,16 +8,19 @@
     <li class="nav-item">
       <a class="nav-link {{ Route::is('order.hasntPaid') ? 'active' :'' }}" href="{{ route('order.hasntPaid') }}">Has'nt Paid</a>
     </li>
+    <li class="nav-item">
+      <a class="nav-link {{ Route::is('order.cancel') ? 'active' :'' }}" href="{{ route('order.cancel') }}">Canceled</a>
+    </li>
   </ul>
   @foreach ($orders as $order)
   <div class="row mt-3 shadow p-5">
     <div class="col-12">
         <div class="row ">
-            @if ($order->has_paid==1)               
+            @if (Route::is('order.hasPaid'))               
             <div class="col-12 text-start">
                 <small class="text-muted">{{ $order->created_at->format('d M Y') }}</small>
             </div>
-            @else
+            @elseif(Route::is('order.hasntPaid'))
             <div class="col-12 text-end">
                 <small class="text-muted" id="countdown">
                     Pay Before {{ $order->created_at->addDay()->format('d M Y H:i') }}
@@ -71,6 +74,19 @@
             
            
         </div>
+        @if (Route::is('order.hasntPaid'))            
+        <div class="row mt-4">
+            <div class="col-12 text-end">
+                <form action="{{ route('order.destroy',$order->id) }}" method="post" class="d-inline">
+                    @method('delete')
+                    @csrf
+                    <button class="btn btn-danger">Cancel</button>
+                </form>
+                <button class="btn btn-primary">Pay</button>
+            </div>
+
+        </div>
+        @endif
     </div>
   </div>
   @endforeach

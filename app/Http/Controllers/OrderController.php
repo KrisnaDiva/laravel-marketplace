@@ -45,6 +45,16 @@ class OrderController extends Controller
             'orders'=>$user->orders->where('has_paid',0)
         ]);
     }
+    public function cancel()
+    {
+        $user=$this->user->getUser();
+        return view('profile.my-order',[
+            'user'=>$user,
+            'orders'=>Order::onlyTrashed()
+            ->where('user_id', $user->id)
+            ->where('has_paid', 0)->get()
+        ]);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -165,6 +175,15 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        //
+        $this->authorize('delete',$order);
+        foreach($order->details as $detail){
+            $product=Product::find($detail->product_id);
+            $quantity=$detail->quantity;
+            $stock=$product->stock;
+            $product->stock=$stock+$quantity;
+            $product->save();
+        }
+        $order->delete();
+        return back();
     }
 }
