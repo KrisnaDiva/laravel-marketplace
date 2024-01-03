@@ -7,11 +7,13 @@
                 Paid</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ Route::is('order.hasntPaid') ? 'active' : '' }}" href="{{ route('order.hasntPaid') }}">Has'nt
+            <a class="nav-link {{ Route::is('order.hasntPaid') ? 'active' : '' }}"
+                href="{{ route('order.hasntPaid') }}">Has'nt
                 Paid</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ Route::is('order.cancel') ? 'active' : '' }}" href="{{ route('order.cancel') }}">Canceled</a>
+            <a class="nav-link {{ Route::is('order.canceedl') ? 'active' : '' }}"
+                href="{{ route('order.canceled') }}">Canceled</a>
         </li>
     </ul>
     @foreach ($orders as $order)
@@ -80,17 +82,42 @@
                                 @csrf
                                 <button class="btn btn-danger">Cancel</button>
                             </form>
-                            <button class="btn btn-primary">Pay</button>
+                            <button class="btn btn-primary" id="pay-button{{ $order->id }}">Pay</button>
                         </div>
-
                     </div>
+                    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}">
+                    </script>
+                    <script type="text/javascript">
+                        var id = {{ $order->id }};
+                        document.getElementById('pay-button' + id).onclick = function() {
+                            // SnapToken acquired from previous step
+                            snap.pay('{{ $order->snap_token }}', {
+                                // Optional
+                                onSuccess: function(result) {
+                                    paymentSuccess(id);
+                                    //   /* You may add your own js here, this is just example */ document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+                                },
+                                // Optional
+                                onPending: function(result) {
+                                    /* You may add your own js here, this is just example */
+                                    document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+                                },
+                                // Optional
+                                onError: function(result) {
+                                    /* You may add your own js here, this is just example */
+                                    document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+                                }
+                            });
+                        };
+                    </script>
                 @endif
                 @if (Route::is('order.hasPaid'))
                     <div class="row mt-4">
                         <div class="col-12 text-end">
                             <button class="btn btn-success" data-bs-toggle="modal"
                                 data-bs-target="#exampleModal{{ $order->id }}">See Transaction Detail </button>
-                                <a class="btn btn-danger" href="{{ route('order.userPrint',$order->id) }}">Print Transaction Detail</a>
+                            <a class="btn btn-danger" href="{{ route('order.userPrint', $order->id) }}">Print Transaction
+                                Detail</a>
                         </div>
                     </div>
                     <div class="modal fade modal-lg" id="exampleModal{{ $order->id }}" width="100%">
@@ -156,11 +183,11 @@
                                             <span>Address :</span>
                                         </div>
                                         <div class="col-9">
-                                            <div>{{ $order->address->full_name }}</div>
-                                            <div>{{ $order->address->phone_number }}</div>
-                                            <div>{{ $order->address->street }}({{ $order->address->others }})</div>
-                                            <div>{{ $order->address->district }}, {{ $order->address->city->name }}</div>
-                                            <div>{{ $order->address->province->name }}</div>
+                                            <div>{{ $order->addressWithTrashed->full_name }}</div>
+                                            <div>{{ $order->addressWithTrashed->phone_number }}</div>
+                                            <div>{{ $order->addressWithTrashed->street }}({{ $order->addressWithTrashed->others }})</div>
+                                            <div>{{ $order->addressWithTrashed->district }}, {{ $order->addressWithTrashed->city->name }}</div>
+                                            <div>{{ $order->addressWithTrashed->province->name }}</div>
                                         </div>
                                     </div>
                                     <hr>
@@ -196,5 +223,23 @@
             </div>
         </div>
     @endforeach
-
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        function paymentSuccess(orderId) {
+            // Use jQuery for AJAX
+            $.ajax({
+                type: 'PATCH',
+                url: '/payment-success/' + orderId,
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(reponse) {
+                    window.location.href = '/my-order/hasPaid';
+                },
+                error: function(error) {
+                    console.error('Error', error);
+                }
+            });
+        }
+    </script>
 @endsection

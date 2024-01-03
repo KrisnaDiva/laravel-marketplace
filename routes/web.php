@@ -53,9 +53,10 @@ Route::middleware(['auth','verified'])->group(function(){
         
         Route::get('/my-order/hasPaid',[OrderController::class,'hasPaid'])->name('order.hasPaid');
         Route::get('/my-order/hasntPaid',[OrderController::class,'hasntPaid'])->name('order.hasntPaid');
-        Route::get('/my-order/cancel',[OrderController::class,'cancel'])->name('order.cancel');
+        Route::get('/my-order/canceled',[OrderController::class,'canceled'])->name('order.canceled');
         Route::delete('/my-order/{order}',[OrderController::class,'destroy'])->name('order.destroy');
         Route::get('/my-order/print/{order}',[OrderController::class,'userPrint'])->name('order.userPrint');
+        Route::patch('/payment-success/{order}',[OrderController::class,'paymentSuccess'])->name('order.paymentSuccess');
 
         Route::get('/get-cities/{province}', [CityController::class,'getCities']);
 });

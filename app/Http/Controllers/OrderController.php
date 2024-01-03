@@ -21,54 +21,54 @@ class OrderController extends Controller
     public function __construct(private UserRepository $user, private UserAddressService $userAddress)
     {
     }
-    public function index(Request $request,$id=null)
+    public function index(Request $request, $id = null)
     {
-        $user=$this->user->getUser();
+        $user = $this->user->getUser();
         if ($id !== null) {
             $orders = $user->store->orders->where('has_paid', $id);
-        }else{
-            $orders=Order::onlyTrashed()
-            ->where('store_id', $user->store->id)
-            ->where('has_paid', 0)->get();
+        } else {
+            $orders = Order::onlyTrashed()
+                ->where('store_id', $user->store->id)
+                ->where('has_paid', 0)->get();
         }
-        return view('store.order.index',[
-            'user'=>$user,
-            'orders'=>$orders
-        ]); 
+        return view('store.order.index', [
+            'user' => $user,
+            'orders' => $orders
+        ]);
     }
     public function hasPaid()
     {
-        $user=$this->user->getUser();
-        return view('profile.my-order',[
-            'user'=>$user,
-            'orders'=>$user->orders->where('has_paid',1)
+        $user = $this->user->getUser();
+        return view('profile.my-order', [
+            'user' => $user,
+            'orders' => $user->orders->where('has_paid', 1)
         ]);
     }
     public function hasntPaid()
     {
-        $user=$this->user->getUser();
-        return view('profile.my-order',[
-            'user'=>$user,
-            'orders'=>$user->orders->where('has_paid',0)
+        $user = $this->user->getUser();
+        return view('profile.my-order', [
+            'user' => $user,
+            'orders' => $user->orders->where('has_paid', 0)
         ]);
     }
-    public function cancel()
+    public function canceled()
     {
-        $user=$this->user->getUser();
-        return view('profile.my-order',[
-            'user'=>$user,
-            'orders'=>Order::onlyTrashed()
-            ->where('user_id', $user->id)
-            ->where('has_paid', 0)->get()
+        $user = $this->user->getUser();
+        return view('profile.my-order', [
+            'user' => $user,
+            'orders' => Order::onlyTrashed()
+                ->where('user_id', $user->id)
+                ->where('has_paid', 0)->get()
         ]);
     }
 
     public function userPrint(Order $order)
     {
-        
-    	$pdf = PDF::loadview('profile.pdf',['order'=>$order]);
+
+        $pdf = PDF::loadview('profile.pdf', ['order' => $order]);
         $pdf->setPaper('A4', 'landscape');
-    	return $pdf->download('transaction-detail.pdf');
+        return $pdf->download('transaction-detail.pdf');
     }
     /**
      * Show the form for creating a new resource.
@@ -102,14 +102,14 @@ class OrderController extends Controller
             $index = substr($key, 4);
             $item[] = CartItem::find($index);
         }
-        
+
         foreach ($costInputs as $key => $costt) {
             $index = substr($key, 4);
-            $cost[$index] = $costt['shippingCost']; 
+            $cost[$index] = $costt['shippingCost'];
         }
 
         foreach ($item as $cartItem) {
-            if(!isset($cartItem->product)){
+            if (!isset($cartItem->product)) {
                 return redirect()->route('cart.index')->with('error', 'Failed to create order');
             }
             $storeId = $cartItem->product->store_id;
@@ -121,48 +121,71 @@ class OrderController extends Controller
                 $storeItems[$storeId]['shippingCost'] = $cost[$cartItem->id];
             }
         }
-        
-        try{
+
+        try {
             DB::beginTransaction();
             foreach ($storeItems as $key => $items) {
                 $order = Order::create([
                     'shipping_cost' => $items['shippingCost'],
-                    'has_paid'=>0,
+                    'has_paid' => 0,
                     'store_id' => $key,
                     'user_id' => $user->id,
                     'address_id' => $this->userAddress->getMainAddress()->id
                 ]);
                 unset($items['shippingCost']);
                 foreach ($items as $item) {
-                   
+
                     if ($item->quantity > $item->product->stock) {
                         DB::rollBack();
                         return redirect()->route('cart.index')->with('error', 'Failed to create order');
                     }
-                    $detail=OrderDetail::create([
+                    $detail = OrderDetail::create([
                         'quantity' => $item->quantity,
                         'subtotal' => $item->quantity * $item->product->price,
                         'product_id' => $item->product->id,
                         'order_id' => $order->id
                     ]);
-                    $product=Product::find($detail->product_id);
-                    $quantity=$detail->quantity;
-                    $stock=$product->stock;
-                    $product->stock=$stock-$quantity;
+                    $product = Product::find($detail->product_id);
+                    $quantity = $detail->quantity;
+                    $stock = $product->stock;
+                    $product->stock = $stock - $quantity;
                     $product->save();
                 }
+                 // Set your Merchant Server Key
+            \Midtrans\Config::$serverKey = config('midtrans.serverKey');
+            // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+            \Midtrans\Config::$isProduction = false;
+            // Set sanitization on (default)
+            \Midtrans\Config::$isSanitized = true;
+            // Set 3DS transaction for credit card to true
+            \Midtrans\Config::$is3ds = true;
+            $params = array(
+                'transaction_details' => array(
+                    'order_id' => rand(),
+                    'gross_amount' => $order->details->sum('subtotal') + $order->shipping_cost,
+                )
+            );
+            
+            $snapToken = \Midtrans\Snap::getSnapToken($params);
+            $order->snap_token=$snapToken;
+            $order->save();
             }
-            foreach ($cartInputs as $cart){
-                $cart=CartItem::find($cart);
+            foreach ($cartInputs as $cart) {
+                $cart = CartItem::find($cart);
                 $cart->delete();
             }
             DB::commit();
-            return redirect()->route('order.hasPaid');
-        }catch(QueryException $e){
+           
+            return redirect()->route('order.hasntPaid');
+        } catch (QueryException $e) {
             DB::rollBack();
             return redirect()->route('cart.index')->with('error', 'Failed to create order: ' . $e->getMessage());
         }
-       
+    }
+
+    public function paymentSuccess(Order $order){
+        $order->has_paid=1;
+        $order->save();
     }
 
     /**
@@ -193,12 +216,12 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        $this->authorize('delete',$order);
-        foreach($order->details as $detail){
-            $product=Product::find($detail->product_id);
-            $quantity=$detail->quantity;
-            $stock=$product->stock;
-            $product->stock=$stock+$quantity;
+        $this->authorize('delete', $order);
+        foreach ($order->details as $detail) {
+            $product = Product::find($detail->product_id);
+            $quantity = $detail->quantity;
+            $stock = $product->stock;
+            $product->stock = $stock + $quantity;
             $product->save();
         }
         $order->delete();

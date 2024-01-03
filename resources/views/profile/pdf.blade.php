@@ -67,11 +67,11 @@
                     <span>Address :</span>
                 </div>
                 <div class="col-9">
-                    <div>{{ $order->address->full_name }}</div>
-                    <div>{{ $order->address->phone_number }}</div>
-                    <div>{{ $order->address->street }}({{ $order->address->others }})</div>
-                    <div>{{ $order->address->district }}, {{ $order->address->city->name }}</div>
-                    <div>{{ $order->address->province->name }}</div>
+                    <div>{{ $order->addressWithTrashed->full_name }}</div>
+                    <div>{{ $order->addressWithTrashed->phone_number }}</div>
+                    <div>{{ $order->addressWithTrashed->street }}({{ $order->addressWithTrashed->others }})</div>
+                    <div>{{ $order->addressWithTrashed->district }}, {{ $order->addressWithTrashed->city->name }}</div>
+                    <div>{{ $order->addressWithTrashed->province->name }}</div>
                 </div>
             </div>
             <hr>
