@@ -12,6 +12,27 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Product extends Model
 {
     use HasFactory,SoftDeletes;
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? false, function ($query, $search) {
+            return $query->where('name', 'like', '%' . $search . '%');
+        })
+        ->when($filters['sortBy'] ?? false, function ($query, $sortBy) use ($filters) {
+            if ($sortBy == 'price') {
+                return $query->orderBy('price', $filters['order'] ?? 'asc');
+            }elseif ($sortBy == 'sales') {
+                return $query
+                    ->withCount(['orderDetails as total_sales' => function ($subQuery) {
+                        $subQuery->join('orders', 'order_details.order_id', '=', 'orders.id')
+                            ->where('orders.has_paid', 1);
+                    }])
+                    ->orderBy('total_sales', $filters['order'] ?? 'desc');
+            } elseif ($sortBy == 'desc') {
+                return $query->orderBy('created_at', 'desc');
+            }
+        });
+    }
+
     protected $guarded=['id'];
     public function store():BelongsTo{
         return $this->belongsTo(Store::class);

@@ -16,6 +16,7 @@ return new class extends Migration
             //$table->string('delivery_service');
             $table->unsignedBigInteger('shipping_cost');
             $table->boolean('has_paid');
+            $table->string('snap_token')->nullable(true);
             $table->unsignedBigInteger('store_id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('address_id');

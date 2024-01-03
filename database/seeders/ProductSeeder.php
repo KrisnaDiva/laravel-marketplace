@@ -16,7 +16,7 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
         $faker = Factory::create();
-        for($i=0;$i<10;$i++){
+        for($i=0;$i<100;$i++){
             $product=Product::create([
             'name'=>$faker->word(),
             'description'=>$faker->text(),

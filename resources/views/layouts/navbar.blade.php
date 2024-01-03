@@ -11,6 +11,11 @@
           {{-- <li><a href="#" class="nav-link px-2 link-body-emphasis">Inventory</a></li> --}}
         </ul>
 
+        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 d-flex" action="{{ route('dashboard') }}" method="get">
+          <input type="search" class="form-control" placeholder="Search..." value="{{ request('search') }}" name="search">
+          <button class="badge bg-danger">Search</button>
+        </form>
+
         <div class="mx-5">
           <a href="{{ route('cart.index') }}" class="text-dark">
           <i class="fa fa-shopping-cart">

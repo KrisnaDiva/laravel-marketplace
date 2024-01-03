@@ -21,6 +21,9 @@ class ProductService{
     public function getPaginateProduct($perPage=10){
         return $this->productRepository->paginate($perPage);
     }
+    public function getPaginateReadyStockProduct($perPage=10){
+        return $this->productRepository->paginateReadyStock($perPage);
+    }
     public function createProduct(array $data){
         $data['store_id']=Auth::user()->store->id;
         try {

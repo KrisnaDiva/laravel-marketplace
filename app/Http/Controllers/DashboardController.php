@@ -12,11 +12,16 @@ use Illuminate\Support\Facades\Auth;
 class DashboardController extends Controller
 {
     public function __construct(private UserRepository $user,private ProductService $productService){}
-    public function index():Response{;
-        $user=$this->user->getUser();
-        return response()->view('dashboard',[
-            'user'=>$user,
-            'products'=>$this->productService->getAllReadyStockProduct(),
-        ]);
+    public function index(Request $request)
+    {
+        $user = $this->user->getUser();
+        return response()->view('dashboard', [
+            'user' => $user,
+            'products' => Product::where('stock', '!=', 0)
+                ->filter(request(['search', 'order','sortBy']))
+                ->paginate(24)
+                ->appends(['search' => request('search'), 'order' => request('order'), 'sortBy' => request('sortBy')]),
+        ]);        
+        
     }
 }

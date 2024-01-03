@@ -10,9 +10,13 @@ class ProductRepository
         return Product::all();
     }
     public function allReadyStock()
-{
+    {
     return Product::where('stock', '!=', 0)->get();
-}
+    }
+    public function paginateReadyStock($perPage=10)
+    {
+    return Product::where('stock', '!=', 0)->paginate($perPage);
+    }
     
     public function paginate($perPage=10)
     {
