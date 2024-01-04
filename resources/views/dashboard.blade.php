@@ -85,7 +85,9 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-between align-items-center pt-1">
-                        <div> <i class="fa fa-star-o rating-star"></i> <span class="rating-number">4.8 | {{ $product->orderDetails->where('order.has_paid', 1)->sum('quantity') }} Sold</span> </div> <div><span class="rating-number">{{ $product->store->address->city->name }}</span></div>
+                        <div> <i class="fa fa-star-o rating-star"></i> 
+                            <span class="rating-number">{{ $product->orderDetails->pluck('review.rating.value')->filter()->avg() }} |                               
+                                {{ $product->orderDetails->where('order.has_paid', 1)->sum('quantity') }} Sold</span> </div> <div><span class="rating-number">{{ $product->store->address->city->name }}</span></div>
                     </div>
                 </div>
             </div>

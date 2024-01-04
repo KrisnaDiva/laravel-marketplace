@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class OrderDetail extends Model
 {
@@ -18,5 +19,8 @@ class OrderDetail extends Model
     }
     public function productWithTrashed():BelongsTo{
         return $this->belongsTo(Product::class,'product_id','id')->withTrashed();
+    }
+    public function review():HasOne{
+        return $this->hasOne(Review::class,'detail_id','id');
     }
 }

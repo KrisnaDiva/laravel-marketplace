@@ -156,6 +156,14 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        @foreach ($product->orderDetails as $orderDetail)
+        @if ($orderDetail->review)
+            
+        {{ $orderDetail->review->rating->value }}
+        @endif
+        @endforeach
+    </div>
     <script src="{{ asset('js/product.js') }}"></script>
     <script>
         $(document).ready(function() {
