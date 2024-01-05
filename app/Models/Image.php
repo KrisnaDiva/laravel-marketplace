@@ -20,4 +20,8 @@ class Image extends Model
     {
         return $this->belongsToMany(Product::class,'product_images')->withPivot(["created_at","updated_at"]);
     }
+    public function reviews()
+    {
+        return $this->belongsToMany(Review::class,'review_images')->withPivot(["created_at","updated_at"]);
+    }
 }

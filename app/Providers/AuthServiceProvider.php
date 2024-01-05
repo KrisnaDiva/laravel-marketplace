@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use App\Models\CartItem;
 use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Models\Product;
 use App\Models\Store;
 use App\Models\UserAddress;
@@ -13,6 +14,7 @@ use App\Policies\CartItemPolicy;
 use App\Policies\CartPolicy;
 use App\Policies\OrderPolicy;
 use App\Policies\ProductPolicy;
+use App\Policies\ReviewPolicy;
 use App\Policies\StoreAddressPolicy;
 use App\Policies\StorePolicy;
 use App\Policies\UserAddressPolicy;
@@ -32,6 +34,7 @@ class AuthServiceProvider extends ServiceProvider
         CartItemPolicy::class=>CartItem::class,
         UserAddressPolicy::class=>UserAddress::class,
         OrderPolicy::class=>Order::class,
+        OrderDetail::class => ReviewPolicy::class,
     ];
 
     /**

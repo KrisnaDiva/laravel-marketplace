@@ -91,7 +91,11 @@
                                         'courier' => $courier,
                                     ]);
                                     $content = json_decode($responseCost, false);
-                                    $ongkirResults[$courier] = $content->rajaongkir->results;
+                                    if (isset($content->rajaongkir->results)) {
+                                        $ongkirResults[$courier] = $content->rajaongkir->results;
+                                    } else {
+                                        $ongkirResults[$courier]=null;            
+                                    }
                                 }
                             @endphp
                             <div class="row mt-3 align-items-center">
@@ -127,30 +131,32 @@
                                 <select id="shippingOption{{ $cart->id }}" class="form-select"
                                     aria-label="Default select example" name="cost{{ $cart->id }}[shippingCost]">
                                     <option value="0">Open this select menu</option>
-                                    <option value="1">inu</option>
-                                    <option value="2">ais</option>
                                     @foreach ($ongkirResults as $results)
-                                        @foreach ($results as $item)
-                                            @foreach ($item->costs as $cost)
-                                                @php
-                                                    $optionValue = '';
-                                                    $value = null;
-                                                    if ($item->name == 'Jalur Nugraha Ekakurir (JNE)') {
-                                                        $optionValue .= 'JNE';
-                                                    } elseif ($item->name == 'Citra Van Titipan Kilat (TIKI)') {
-                                                        $optionValue .= 'TIKI';
-                                                    }
-                                                    $optionValue .= $cost->service . ' ';
-                                                    foreach ($cost->cost as $harga) {
-                                                        $value = $harga->value;
-                                                        $optionValue .= 'Rp' . $harga->value . ' (est: ' . str_replace(' HARI', '', $harga->etd) . ' Days)';
-                                                    }
-                                                @endphp
-                                                <option class="mb-2" value="{{ $value }}">
-                                                    {!! $optionValue !!}
-                                                </option>
-                                            @endforeach
+                                    @if ($results)                                     
+                                    @foreach ($results as $item)
+                                        @foreach ($item->costs as $cost)
+                                            @php
+                                                $optionValue = '';
+                                                $value = null;
+                                                if ($item->name == 'Jalur Nugraha Ekakurir (JNE)') {
+                                                    $optionValue .= 'JNE';
+                                                } elseif ($item->name == 'Citra Van Titipan Kilat (TIKI)') {
+                                                    $optionValue .= 'TIKI';
+                                                }
+                                                $optionValue .= $cost->service . ' ';
+                                                foreach ($cost->cost as $harga) {
+                                                    $value = $harga->value;
+                                                    $optionValue .= 'Rp' . $harga->value . ' (est: ' . str_replace(' HARI', '', $harga->etd) . ' Days)';
+                                                }
+                                            @endphp
+                                            <option class="mb-2" value="{{ $value }}">
+                                                {!! $optionValue !!}
+                                            </option>
                                         @endforeach
+                                    @endforeach
+                                    @else
+                                    <option value="0">No shipping</option>
+                                    @endif
                                     @endforeach
                                 </select>
                             </div>
@@ -228,7 +234,11 @@
                                         'courier' => $courier,
                                     ]);
                                     $content = json_decode($responseCost, false);
-                                    $ongkirResults[$courier] = $content->rajaongkir->results;
+                                    if (isset($content->rajaongkir->results)) {
+                                        $ongkirResults[$courier] = $content->rajaongkir->results;
+                                    } else {
+                                        $ongkirResults[$courier]=null;            
+                                    }
                                 }
                             @endphp
                             <div class="row">
@@ -267,30 +277,32 @@
                                     <select id="shippingOption{{ $cart->id }}" class="form-select"
                                         aria-label="Default select example" name="cost{{ $cart->id }}[shippingCost]">
                                         <option value="0">Open this select menu</option>
-                                        <option value="1">inu</option>
-                                        <option value="2">ais</option>
                                         @foreach ($ongkirResults as $results)
-                                            @foreach ($results as $item)
-                                                @foreach ($item->costs as $cost)
-                                                    @php
-                                                        $optionValue = '';
-                                                        $value = null;
-                                                        if ($item->name == 'Jalur Nugraha Ekakurir (JNE)') {
-                                                            $optionValue .= 'JNE';
-                                                        } elseif ($item->name == 'Citra Van Titipan Kilat (TIKI)') {
-                                                            $optionValue .= 'TIKI';
-                                                        }
-                                                        $optionValue .= $cost->service . ' ';
-                                                        foreach ($cost->cost as $harga) {
-                                                            $value = $harga->value;
-                                                            $optionValue .= 'Rp' . $harga->value . ' (est: ' . str_replace(' HARI', '', $harga->etd) . ' Days)';
-                                                        }
-                                                    @endphp
-                                                    <option class="mb-2" value="{{ $value }}">
-                                                        {!! $optionValue !!}
-                                                    </option>
-                                                @endforeach
+                                        @if ($results)                                           
+                                        @foreach ($results as $item)
+                                            @foreach ($item->costs as $cost)
+                                                @php
+                                                    $optionValue = '';
+                                                    $value = null;
+                                                    if ($item->name == 'Jalur Nugraha Ekakurir (JNE)') {
+                                                        $optionValue .= 'JNE';
+                                                    } elseif ($item->name == 'Citra Van Titipan Kilat (TIKI)') {
+                                                        $optionValue .= 'TIKI';
+                                                    }
+                                                    $optionValue .= $cost->service . ' ';
+                                                    foreach ($cost->cost as $harga) {
+                                                        $value = $harga->value;
+                                                        $optionValue .= 'Rp' . $harga->value . ' (est: ' . str_replace(' HARI', '', $harga->etd) . ' Days)';
+                                                    }
+                                                @endphp
+                                                <option class="mb-2" value="{{ $value }}">
+                                                    {!! $optionValue !!}
+                                                </option>
                                             @endforeach
+                                        @endforeach
+                                        @else
+                                        <option value="0">No shipping</option>
+                                        @endif
                                         @endforeach
                                     </select>
                                 </div>

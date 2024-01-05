@@ -8,6 +8,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Store\ProductController;
 use App\Http\Controllers\UserAddressController;
 use App\Http\Controllers\WishlistController;
@@ -57,6 +58,12 @@ Route::middleware(['auth','verified'])->group(function(){
         Route::delete('/my-order/{order}',[OrderController::class,'destroy'])->name('order.destroy');
         Route::get('/my-order/print/{order}',[OrderController::class,'userPrint'])->name('order.userPrint');
         Route::patch('/payment-success/{order}',[OrderController::class,'paymentSuccess'])->name('order.paymentSuccess');
+
+        Route::get('my-order/{orderDetail}/review',[ReviewController::class,'create'])->name('review.create');
+        Route::post('my-order/{orderDetail}/review',[ReviewController::class,'store'])->name('review.store');
+        Route::get('my-order/{orderDetail}/review/edit',[ReviewController::class,'edit'])->name('review.edit');
+        Route::put('my-order/{orderDetail}/review',[ReviewController::class,'update'])->name('review.update');
+        Route::delete('review/{orderDetail}/images/{image}',[ReviewController::class,'destroyImage'])->name('review.destroyImage');
 
         Route::get('/get-cities/{province}', [CityController::class,'getCities']);
 });

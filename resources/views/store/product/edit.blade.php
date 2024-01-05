@@ -18,7 +18,8 @@
 
             <form action="{{ route('products.update',$product->id) }}" method="POST" enctype="multipart/form-data" id="my-form">
                 @method('put')
-                @csrf              
+                @csrf   
+                @if ($product->images->count()<5) 
                 <div class="multiple-uploader @error('image') border border-danger @enderror" id="multiple-uploader">
                     <div class="mup-msg">
                         <span class="mup-main-msg">click to upload images.</span>
@@ -32,6 +33,8 @@
                            {{ $message }}
                     </p>
                 @enderror
+                @endif
+                
                 <div class="mb-3">
                     <label class="mb-2 text-muted" for="name">Product Name</label>
                     <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name',$product->name) }}" required>

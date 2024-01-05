@@ -39,7 +39,7 @@ class OrderController extends Controller
     public function hasPaid()
     {
         $user = $this->user->getUser();
-        return view('profile.my-order', [
+        return view('order.my-order', [
             'user' => $user,
             'orders' => $user->orders->where('has_paid', 1)
         ]);
@@ -47,7 +47,7 @@ class OrderController extends Controller
     public function hasntPaid()
     {
         $user = $this->user->getUser();
-        return view('profile.my-order', [
+        return view('order.my-order', [
             'user' => $user,
             'orders' => $user->orders->where('has_paid', 0)
         ]);
@@ -55,7 +55,7 @@ class OrderController extends Controller
     public function canceled()
     {
         $user = $this->user->getUser();
-        return view('profile.my-order', [
+        return view('order.my-order', [
             'user' => $user,
             'orders' => Order::onlyTrashed()
                 ->where('user_id', $user->id)
@@ -66,7 +66,7 @@ class OrderController extends Controller
     public function userPrint(Order $order)
     {
 
-        $pdf = PDF::loadview('profile.pdf', ['order' => $order]);
+        $pdf = PDF::loadview('order.pdf', ['order' => $order]);
         $pdf->setPaper('A4', 'landscape');
         return $pdf->download('transaction-detail.pdf');
     }

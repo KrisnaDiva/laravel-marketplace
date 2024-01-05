@@ -1,6 +1,23 @@
 @extends('layouts.main')
 @section('title', 'My Order')
 @section('container')
+<div class="row">
+    <div class="col-8">
+        @if (session()->has('success'))
+            <div class="position-fixed top-2 start-50 translate-middle-x" style="z-index: 1050;">
+                <div id="successAlert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+            <script>
+                setTimeout(function() {
+                    $('#successAlert').alert('close');
+                }, 5000);
+            </script>
+        @endif
+    </div>
+</div>
     <ul class="nav nav-tabs nav-justified nav-underline">
         <li class="nav-item">
             <a class="nav-link {{ Route::is('order.hasPaid') ? 'active' : '' }}" href="{{ route('order.hasPaid') }}">Has
@@ -12,28 +29,25 @@
                 Paid</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ Route::is('order.canceedl') ? 'active' : '' }}"
+            <a class="nav-link {{ Route::is('order.canceled') ? 'active' : '' }}"
                 href="{{ route('order.canceled') }}">Canceled</a>
         </li>
     </ul>
-    @foreach ($orders as $order)
+    @foreach ($orders->sortByDesc('created_at')  as $order)
         <div class="row mt-3 shadow p-5">
             <div class="col-12">
                 <div class="row ">
-                    @if (Route::is('order.hasPaid'))
-                        <div class="col-12 text-start">
+                        <div class="col-12 d-flex justify-content-between">
                             <small class="text-muted">{{ $order->created_at->format('d M Y') }}</small>
+                            @if(Route::is('order.hasntPaid'))
+                                    <small class="text-muted" id="countdown">
+                                        Pay Before {{ $order->created_at->addDay()->format('d M Y H:i') }}
+                                    </small>
+                                    <script>
+                                        var targetTimestamp = {{ $order->created_at->addDay()->timestamp * 1000 }};
+                                    </script>
+                            @endif
                         </div>
-                    @elseif(Route::is('order.hasntPaid'))
-                        <div class="col-12 text-end">
-                            <small class="text-muted" id="countdown">
-                                Pay Before {{ $order->created_at->addDay()->format('d M Y H:i') }}
-                            </small>
-                            <script>
-                                var targetTimestamp = {{ $order->created_at->addDay()->timestamp * 1000 }};
-                            </script>
-                        </div>
-                    @endif
                 </div>
                 <div class="row">
                     <span>{{ $order->store->name }}</span>
@@ -41,7 +55,7 @@
                 <hr>
                 @if ($order->details)
                     @foreach ($order->details as $detail)
-                        <div class="row mt-2">
+                        <div class="row mt-2 justify-content-between">
                             <div class="col-1 ">
                                 <img src="{{ asset('storage/' . $detail->productWithTrashed->images->first()->url) }}"
                                     class="img-fluid rounded-3 border border-dark"
@@ -57,22 +71,39 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-2 text-end">
+                            <div class="col-1 text-end">
                                 <span>Rp{{ number_format($detail->subtotal, 0, ',', '.') }}</span>
                             </div>
+                            @if (Route::is('order.hasPaid'))
+                            <div class="col-1 text-end">
+                                
+                                @if ($detail->review)
+                                <a href="{{ route('review.edit',$detail->id) }}" class="badge bg-warning text-decoration-none">Edit Review</a>
+                                @else
+                                <a href="{{ route('review.create',$detail->id) }}" class="badge bg-primary text-decoration-none">Review</a>
+                                @endif
+                            </div>
+                            @endif
                         </div>
                         <hr>
                     @endforeach
                 @endif
                 <div class="row text-end">
+                    @if (Route::is('order.hasPaid'))
+                    <div class="col-10">
+                        <span>Total Order :</span>
+                    </div>
+                    <div class="col-1">
+                        <span>Rp{{ number_format($order->details->sum('subtotal') + $order->shipping_cost, 0, ',', '.') }}</span>
+                    </div>
+                    @else
                     <div class="col-11">
                         <span>Total Order :</span>
                     </div>
                     <div class="col-1">
                         <span>Rp{{ number_format($order->details->sum('subtotal') + $order->shipping_cost, 0, ',', '.') }}</span>
                     </div>
-
-
+                    @endif
                 </div>
                 @if (Route::is('order.hasntPaid'))
                     <div class="row mt-4">

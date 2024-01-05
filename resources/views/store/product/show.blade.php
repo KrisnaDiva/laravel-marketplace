@@ -1,6 +1,14 @@
 @extends('layouts.main')
 @section('title', 'Product')
 @section('container')
+@section('link')
+<style>
+    .pagination{
+        justify-content: center!important;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
+@endsection
     <div class="row">
         <div class="col-8">
             @if (session()->has('success'))
@@ -33,7 +41,7 @@
     </div>
     <div class="container mt-5 mb-5">
         <div class="row d-flex justify-content-center">
-            <div class="col-md-10">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="row">
                         <div class="col-md-6">
@@ -58,8 +66,18 @@
                                     <h5 class="text-uppercase">{{ $product->name }}</h5>
                                     <div class="price d-flex flex-row align-items-center"> <span
                                             class="act-price">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
+                                            
                                         {{-- <div class="ml-2"> <small class="dis-price">$59</small> <span>40% OFF</span>
                                         </div> --}}
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center pt-1">
+                                        <div> 
+                                            <i class="fa fa-star" style="color: #ffd250"></i> 
+                                            <span>
+                                                {{ $product->orderDetails->pluck('review.rating.value')->filter()->avg() }} | 
+                                                {{ $product->orderDetails->where('order.has_paid', 1)->sum('quantity') }} Sold
+                                            </span> 
+                                        </div>
                                     </div>
                                 </div>
                                 {{-- @if ($user->addresses->where('isMain', 1)->first())
@@ -137,7 +155,7 @@
                                 <div class="cart mt-4 align-items-center">
                                     <button class="btn btn-danger text-uppercase mr-2 px-4">Buy Now</button>
                                     <i class="fa fa-heart text-muted mx-3"></i>
-                                    <i class="fa fa-share-alt text-muted"></i>
+                                    <i class="fa fa-share text-muted"></i>
                                 </div>
                                 {{-- <div class="sizes mt-5">
                                     <h6 class="text-uppercase">Size</h6> <label class="radio"> <input type="radio"
@@ -155,14 +173,76 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        @foreach ($product->orderDetails as $orderDetail)
-        @if ($orderDetail->review)
-            
-        {{ $orderDetail->review->rating->value }}
-        @endif
-        @endforeach
+
+        <div class="row mt-5 justify-content-center">
+            <div class="col-12 shadow">
+                <div class="row align-items-center pt-3">
+                    <span class="fs-5">Product reviews ({{ $product->orderDetails->filter(function ($orderDetail) {
+                        return $orderDetail->review !== null;
+                    })->count() }})</span>
+                </div><hr>
+                @php
+                    $reviews = $product->orderDetails->pluck('review')->filter(); 
+                    $perPage = 5;
+                    $currentPage = request('page', 1);
+                    $reviews = new \Illuminate\Pagination\LengthAwarePaginator(
+                        $reviews->forPage($currentPage, $perPage),
+                        $reviews->count(),
+                        $perPage,
+                        $currentPage,
+                        ['path' => request()->url()],
+                    );
+                @endphp
+
+                @foreach ($reviews as $review)
+                    <div class="row">
+                        <div class="col-1 text-end">
+                            @if ($review->orderDetail->order->user->image)
+            <img src="{{ asset('storage/'.$review->orderDetail->order->user->image->url) }}" alt="mdo" width="32" height="32" class="rounded-circle border border-dark">
+            @else
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt="mdo" width="32" height="32" class="rounded-circle border border-dark">           
+            @endif
+
+                        </div>
+                        <div class="col-11 p-0">
+                            <div class="row">
+                                <small>{{ $review->orderDetail->order->user->name }}</small>
+                                <span> 
+                                    @for ($i = 1; $i <= $review->rating->value; $i++)
+                                    <i class="fa fa-star" style="color: #ffd250"></i>
+                                    @endfor
+                                     Star
+                                </span>
+                                <small class="text-muted">{{ $review->updated_at->format('d-m-Y H:i') }}</small>
+                            </div>
+                            <div class="row mt-2">
+                                <span>{{ $review->comment }}</span>
+                            </div>
+                            @if ($review->images)
+                                <div class="row mt-2">
+                                    @foreach ($review->images as $image)
+                                        <div class="col-1" style="margin-right: -20px;">
+                                            <img src="{{ asset('storage/' . $image->url) }}" alt="mdo" width="64"
+                                                height="64" class=" border border-dark">
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                    <hr>
+                @endforeach
+
+                @if ($reviews->isEmpty())
+                    <div class="row text-center p-5">
+                        <h1>This Product Doesn't Have Review</h1>
+                    </div>
+                @endif
+
+                {{ $reviews->links() }}
+
+            </div>
+        </div>
     </div>
     <script src="{{ asset('js/product.js') }}"></script>
     <script>
