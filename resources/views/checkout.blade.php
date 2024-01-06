@@ -102,7 +102,7 @@
                                 <div class="col-6">
                                     <div class="row align-items-center">
                                         <div class="col-2">
-                                            <img src="{{ asset('storage/' . $cart->product->images->first()->url) }}"
+                                            <img src="{{ $cart->product->images->isNotEmpty() ? asset('storage/' . $cart->product->images->first()->url) : 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg' }}"
                                                 class="img-fluid rounded-3" alt="{{ $cart->product->name }}">
                                         </div>
                                         <div class="col-10">
@@ -252,7 +252,7 @@
                                 <div class="col-6">
                                     <div class="row align-items-center">
                                         <div class="col-2">
-                                            <img src="{{ asset('storage/' . $cart->product->images->first()->url) }}"
+                                            <img src="{{ $cart->product->images->isNotEmpty() ? asset('storage/' . $cart->product->images->first()->url) : 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg' }}"
                                                 class="img-fluid rounded-3" alt="{{ $cart->product->name }}">
                                         </div>
                                         <div class="col-10">

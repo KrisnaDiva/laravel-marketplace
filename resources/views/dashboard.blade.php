@@ -75,7 +75,8 @@
                            
                             {{-- <span class="wishlist"><i class="fa fa-heart-o"></i></span>  --}}
                         </div>
-                    </div> <img src="{{ asset('storage/' . $product->images->first()->url) }}" class="img-fluid rounded thumbnail-image">
+                    </div> <img src="{{ $product->images->isNotEmpty() ? asset('storage/' . $product->images->first()->url) : 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg' }}" class="img-fluid rounded thumbnail-image">
+
                 </div>
                 <div class="product-detail-container p-2">
                     <div class="d-flex justify-content-between align-items-center">

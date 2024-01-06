@@ -26,7 +26,6 @@ return new class extends Migration
             // $table->foreignId('condition_id')->constrained();
             // $table->foreignId('store_id')->constrained();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

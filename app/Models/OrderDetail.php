@@ -23,4 +23,7 @@ class OrderDetail extends Model
     public function review():HasOne{
         return $this->hasOne(Review::class,'detail_id','id');
     }
+    public function image():BelongsTo{
+        return $this->belongsTo(Image::class);
+    }
 }

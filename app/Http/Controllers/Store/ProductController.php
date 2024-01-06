@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Store\ProductCreateRequest;
 use App\Http\Requests\Store\ProductUpdateRequest;
 use App\Models\Image;
+use App\Models\Product;
 use App\Models\ProductCondition;
 use App\Repositories\UserRepository;
 use App\Services\CategoryService;
@@ -56,11 +57,11 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Product $product)
     {
         return view('store.product.show',[
             'user'=>$this->user->getUser(),
-            'product'=>$this->productService->getProduct($id),
+            'product'=>$product,
         ]);
     }
 
@@ -103,9 +104,7 @@ class ProductController extends Controller
         $this->authorize('delete',$this->productService->getProduct($product));
         try{
             DB::beginTransaction();
-            Storage::delete($image->url);
             $image->products()->detach($product);
-            $image->delete();
             DB::commit();
         }catch(QueryException $e){
             DB::rollBack();

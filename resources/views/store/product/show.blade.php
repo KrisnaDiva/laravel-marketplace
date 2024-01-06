@@ -47,7 +47,7 @@
                         <div class="col-md-6">
                             <div class="images p-3">
                                 <div class="text-center p-4">
-                                    <img id="main-image" src="{{ asset('storage/' . $product->images->first()->url) }}"
+                                    <img id="main-image" src="{{ $product->images->isNotEmpty() ? asset('storage/' . $product->images->first()->url) : 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg' }}"
                                         width="250" />
                                 </div>
                                 <div class="thumbnail text-center">
@@ -211,7 +211,7 @@
                                     @for ($i = 1; $i <= $review->rating->value; $i++)
                                     <i class="fa fa-star" style="color: #ffd250"></i>
                                     @endfor
-                                     Star
+                                     star
                                 </span>
                                 <small class="text-muted">{{ $review->updated_at->format('d-m-Y H:i') }}</small>
                             </div>

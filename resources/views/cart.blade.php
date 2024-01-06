@@ -61,7 +61,7 @@
                                                     <div class="row mb-4 d-flex justify-content-between align-items-center">
                                                         <div class="col-md-2 col-lg-2 col-xl-2">
                                                             <input type="checkbox" id="checkbox_{{ $item->id }}" value="{{ $item->id }}" class="form-check-input" onclick="handleCheckboxClick(this)">
-                                                            <img src="{{ asset('storage/' . $item->product->images->first()->url) }}"
+                                                            <img src="{{ $item->product->images->isNotEmpty() ? asset('storage/' . $item->product->images->first()->url) : 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg' }}"
                                                                 class="img-fluid rounded-3"
                                                                 alt="{{ $item->product->name }}">
                                                         </div>
@@ -114,7 +114,7 @@
                                                         style="background-color: whitesmoke">
                                                         
                                                         <div class="col-md-2 col-lg-2 col-xl-2">
-                                                            <img src="{{ asset('storage/' . $item->product->images->first()->url) }}"
+                                                            <img src="{{ $item->product->images->isNotEmpty() ? asset('storage/' . $item->product->images->first()->url) : 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg' }}"
                                                                 class="img-fluid rounded-3" alt="Cotton T-shirt">
                                                         </div>
                                                         <div class="col-md-3 col-lg-3 col-xl-3">

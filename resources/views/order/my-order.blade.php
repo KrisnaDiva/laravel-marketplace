@@ -57,14 +57,14 @@
                     @foreach ($order->details as $detail)
                         <div class="row mt-2 justify-content-between">
                             <div class="col-1 ">
-                                <img src="{{ asset('storage/' . $detail->productWithTrashed->images->first()->url) }}"
+                                <img src="{{ $detail->image != null ? asset('storage/' . $detail->image->url) : 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg' }}"
                                     class="img-fluid rounded-3 border border-dark"
-                                    alt="{{ $detail->productWithTrashed->name }}" width="100%">
+                                    alt="{{ $detail->name }}" width="100%">
                             </div>
                             <div class="col-9 d-flex align-items-center">
                                 <div class="row ">
                                     <div class="col-12">
-                                        <span>{{ $detail->productWithTrashed->name }}</span>
+                                        <span>{{ $detail->name }}</span>
                                     </div>
                                     <div class="col-12">
                                         <span>&times;{{ $detail->quantity }}</span>
@@ -76,11 +76,12 @@
                             </div>
                             @if (Route::is('order.hasPaid'))
                             <div class="col-1 text-end">
-                                
+                            @if ($detail->product)
                                 @if ($detail->review)
                                 <a href="{{ route('review.edit',$detail->id) }}" class="badge bg-warning text-decoration-none">Edit Review</a>
                                 @else
                                 <a href="{{ route('review.create',$detail->id) }}" class="badge bg-primary text-decoration-none">Review</a>
+                                @endif                              
                                 @endif
                             </div>
                             @endif
@@ -91,12 +92,24 @@
                 <div class="row text-end">
                     @if (Route::is('order.hasPaid'))
                     <div class="col-10">
+                        <span>Shpping Cost :</span>
+                    </div>
+                    <div class="col-1">
+                        <span>Rp{{ number_format($order->shipping_cost, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="col-10">
                         <span>Total Order :</span>
                     </div>
                     <div class="col-1">
                         <span>Rp{{ number_format($order->details->sum('subtotal') + $order->shipping_cost, 0, ',', '.') }}</span>
                     </div>
                     @else
+                    <div class="col-11">
+                        <span>Shpping Cost :</span>
+                    </div>
+                    <div class="col-1">
+                        <span>Rp{{ number_format($order->shipping_cost, 0, ',', '.') }}</span>
+                    </div>
                     <div class="col-11">
                         <span>Total Order :</span>
                     </div>
@@ -184,13 +197,13 @@
                                                     <div class="card-body">
                                                         <div class="row">
                                                             <div class="col-2">
-                                                                <img src="{{ asset('storage/' . $detail->product->images->first()->url) }}"
+                                                                <img src="{{ $detail->image != null ? asset('storage/' . $detail->image->url) : 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg' }}"
                                                                     class="img-fluid rounded-3 border border-dark"
-                                                                    alt="{{ $detail->productWithTrashed->name }}"
+                                                                    alt="{{ $detail->name }}"
                                                                     width="100%">
                                                             </div>
                                                             <div class="col-7">
-                                                                <span>{{ $detail->product->name }}</span><br>
+                                                                <span>{{ $detail->name }}</span><br>
                                                                 <span>&times;{{ $detail->quantity }}</span>
                                                             </div>
                                                             <div class="col-3 text-end">
@@ -233,7 +246,7 @@
                                         <div class="col-12 d-flex justify-content-between mb-3">
                                             <span>Total Ongkos Kirim
                                                 ({{ $order->details->sum(function ($detail) {
-                                                    return $detail->product->weight * $detail->quantity;
+                                                    return $detail->weight;
                                                 }) }}
                                                 gr)</span>
                                             <span>Rp{{ number_format($order->shipping_cost, 0, ',', '.') }}</span>

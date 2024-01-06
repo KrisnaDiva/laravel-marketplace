@@ -140,9 +140,12 @@ class OrderController extends Controller
                         return redirect()->route('cart.index')->with('error', 'Failed to create order');
                     }
                     $detail = OrderDetail::create([
+                        'name'=>$item->product->name,
+                        'weight'=>$item->product->weight*$item->quantity,
                         'quantity' => $item->quantity,
                         'subtotal' => $item->quantity * $item->product->price,
                         'product_id' => $item->product->id,
+                        'image_id'=>$item->product->images->first() ? $item->product->images->first()->id : null,
                         'order_id' => $order->id
                     ]);
                     $product = Product::find($detail->product_id);
