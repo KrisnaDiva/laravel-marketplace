@@ -8,6 +8,7 @@ use App\Http\Requests\Store\ProductUpdateRequest;
 use App\Models\Image;
 use App\Models\Product;
 use App\Models\ProductCondition;
+use App\Models\Store;
 use App\Repositories\UserRepository;
 use App\Services\CategoryService;
 use App\Services\ProductService;
@@ -59,9 +60,11 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
+ 
         return view('store.product.show',[
             'user'=>$this->user->getUser(),
             'product'=>$product,
+     
         ]);
     }
 

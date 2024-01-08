@@ -43,7 +43,7 @@
         <div class="row d-flex justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="row">
+                    <div class="row mb-5">
                         <div class="col-md-6">
                             <div class="images p-3">
                                 <div class="text-center p-4">
@@ -162,7 +162,9 @@
                                     </form>
                                     {{-- <i class="fa fa-heart text-muted mx-3"></i>
                                     <i class="fa fa-share text-muted"></i> --}}
+                                    
                                 </div>
+                                
                                 {{-- <div class="sizes mt-5">
                                     <h6 class="text-uppercase">Size</h6> <label class="radio"> <input type="radio"
                                             name="size" value="S" checked> <span>S</span> </label> <label
@@ -176,6 +178,62 @@
                             </div>
                         </div>
                     </div>
+                    <hr>  <div class="row justify-content-center ">
+                    <div class="col-8">
+                            <div class="row p-3 align-items-center">
+                              <div class="col-2 text-end">
+                                @if ($product->store->image)
+                                <img src="{{ asset('storage/'.$product->store->image->url) }}"alt="mdo" width="70" height="70" class="rounded-circle border border-dark">
+                                @else
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt="mdo" width="70" height="70" class="rounded-circle border border-dark">        
+                                @endif
+                              </div>
+                              <div class="col-3" style="border-right: solid 1px;">
+                                <div class="row"><span class="fw-bold">{{ $product->store->name }}</span></div>
+                                <a class="badge bg-primary text-decoration-none">Visit Store</a>
+                              </div>
+                              @php
+                              $sum = 0;
+                              $count = 0;
+                          
+                              foreach ($product->store->products as $produk) {
+                                  foreach ($produk->orderDetails as $detail) {
+                                      if ($detail->review) {
+                                          $sum += $detail->review->rating->value;
+                                          $count++;
+                                      }
+                                  }
+                              }
+                          
+                              $averageRating = $count > 0 ? $sum / $count : 0;
+                          @endphp
+                              <div class="col-7">
+                                <div class="row justify-content-between">
+                                  <div class="col-5 d-flex justify-content-between">
+                                    <span>Reviews</span>
+                                    <span>{{ $count }}</span>
+                                  </div>
+                                  <div class="col-5 d-flex justify-content-between">
+                                    <span>Products</span>
+                                    <span>{{ $product->store->products->count() }}</span>
+                                  </div>
+                                </div>
+                                <div class="row justify-content-between">
+                                  <div class="col-5 d-flex justify-content-between">
+                                    <span>Average Rating</span>
+                                    <span><i class="fa fa-star" style="color: #ffd250"></i>{{ $averageRating }}</span>
+                                    
+                                  </div>
+                                  <div class="col-5 d-flex justify-content-between">
+                                    <span>Joined</span>
+                                    <span>{{ $product->store->created_at->format('d-m-Y') }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
