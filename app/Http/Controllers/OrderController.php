@@ -191,6 +191,83 @@ class OrderController extends Controller
         $order->save();
     }
 
+    public function storeBuyNow(Request $request){
+        $user = $this->user->getUser();
+        $product=Product::find($request->product_id);
+        $quantity=$request->quantity;
+        $shippingCost=$request->shippingCost;
+
+        try{
+            DB::beginTransaction();
+            $order=Order::create([
+                'shipping_cost' => $shippingCost,
+                'has_paid' => 0,
+                'store_id' => $product->store->id,
+                'user_id' => $user->id,
+                'address_id' => $this->userAddress->getMainAddress()->id
+            ]);
+            if ($quantity > $product->stock) {
+                DB::rollBack();
+                return redirect()->route('products.show',$product->id)->with('error', 'Failed to create order');
+            }
+            $detail = OrderDetail::create([
+                'name'=>$product->name,
+                'weight'=>$product->weight*$quantity,
+                'quantity' => $quantity,
+                'subtotal' => $quantity * $product->price,
+                'product_id' => $product->id,
+                'image_id'=>$product->images->first() ? $product->images->first()->id : null,
+                'order_id' => $order->id
+            ]);
+                $stock = $product->stock;
+                $product->stock = $stock - $quantity;
+                $product->save();
+
+                                // Set your Merchant Server Key
+            \Midtrans\Config::$serverKey = config('midtrans.serverKey');
+            // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+            \Midtrans\Config::$isProduction = false;
+            // Set sanitization on (default)
+            \Midtrans\Config::$isSanitized = true;
+            // Set 3DS transaction for credit card to true
+            \Midtrans\Config::$is3ds = true;
+            $params = array(
+                'transaction_details' => array(
+                    'order_id' => rand(),
+                    'gross_amount' => $order->details->sum('subtotal') + $order->shipping_cost,
+                )
+            );
+            
+            $snapToken = \Midtrans\Snap::getSnapToken($params);
+            $order->snap_token=$snapToken;
+            $order->save();
+
+            DB::commit();
+            return redirect()->route('order.hasntPaid');
+        }catch(QueryException $e){
+            DB::rollBack();
+            return redirect()->route('products.show',$product->id)->with('error', 'Failed to create order: ' . $e->getMessage());
+
+        }
+        // if ($item->quantity > $item->product->stock) {
+        //     DB::rollBack();
+        //     return redirect()->route('cart.index')->with('error', 'Failed to create order');
+        // }
+        // $detail = OrderDetail::create([
+        //     'name'=>$item->product->name,
+        //     'weight'=>$item->product->weight*$item->quantity,
+        //     'quantity' => $item->quantity,
+        //     'subtotal' => $item->quantity * $item->product->price,
+        //     'product_id' => $item->product->id,
+        //     'image_id'=>$item->product->images->first() ? $item->product->images->first()->id : null,
+        //     'order_id' => $order->id
+        // ]);
+        // $product = Product::find($detail->product_id);
+        // $quantity = $detail->quantity;
+        // $stock = $product->stock;
+        // $product->stock = $stock - $quantity;
+        // $product->save();
+    }
     /**
      * Display the specified resource.
      */

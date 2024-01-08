@@ -50,7 +50,9 @@ Route::middleware(['auth','verified'])->group(function(){
         Route::resource('/address',UserAddressController::class);
 
         Route::get('/checkout',[CheckoutController::class,'index'])->name('checkout')->middleware('hasAddress');
-        Route::post('/order',[OrderController::class,'store'])->name('order');
+        Route::post('/checkout',[CheckoutController::class,'buyNow'])->name('buyNow')->middleware('hasAddress');
+        Route::post('/order',[OrderController::class,'store'])->name('order'); 
+        Route::post('/order',[OrderController::class,'storeBuyNow'])->name('order.buyNow'); 
         
         Route::get('/my-order/hasPaid',[OrderController::class,'hasPaid'])->name('order.hasPaid');
         Route::get('/my-order/hasntPaid',[OrderController::class,'hasntPaid'])->name('order.hasntPaid');

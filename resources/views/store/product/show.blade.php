@@ -138,7 +138,7 @@
                                         <div class="col-sm-3">
                                             <input type="number" class="form-control" id="quantity" name="quantity"
                                                 min="1" max="{{ $product->stock }}" value="1"
-                                                oninput="handleInputChange()">
+                                                oninput="handleInputChange()" >
                                         </div>
                                         <label class="col-sm-4 col-form-label text-muted">{{ $product->stock }}
                                             left</label>
@@ -153,9 +153,15 @@
                                     </div>
                                 </form>
                                 <div class="cart mt-4 align-items-center">
-                                    <button class="btn btn-danger text-uppercase mr-2 px-4">Buy Now</button>
-                                    <i class="fa fa-heart text-muted mx-3"></i>
-                                    <i class="fa fa-share text-muted"></i>
+                                    <form action="{{ route('buyNow') }}" method="post" id="buy-now-form">
+                                        @csrf
+                                        <!-- Hidden input to store the quantity value -->
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                        <input type="hidden" name="quantity" id="buy-now-quantity" value="1">
+                                        <button class="btn btn-danger text-uppercase mr-2 px-4" type="submit">Buy Now</button>
+                                    </form>
+                                    {{-- <i class="fa fa-heart text-muted mx-3"></i>
+                                    <i class="fa fa-share text-muted"></i> --}}
                                 </div>
                                 {{-- <div class="sizes mt-5">
                                     <h6 class="text-uppercase">Size</h6> <label class="radio"> <input type="radio"
@@ -202,7 +208,6 @@
             @else
             <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt="mdo" width="32" height="32" class="rounded-circle border border-dark">           
             @endif
-
                         </div>
                         <div class="col-11 p-0">
                             <div class="row">
@@ -269,7 +274,15 @@
             if (inputElement.value > maxValue) {
                 inputElement.value = maxValue;
             }
+            var buyNowQuantityInput = document.getElementById('buy-now-quantity');
+            buyNowQuantityInput.value = inputElement.value;
         }
     </script>
-
+<script>
+    function inputChange() {
+        // Update the hidden input value in the second form based on the quantity input in the first form
+        var quantityInput = document.getElementById('quantity');
+        
+    }
+</script>
 @endsection

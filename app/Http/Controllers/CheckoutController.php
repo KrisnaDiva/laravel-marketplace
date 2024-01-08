@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CartItem;
+use App\Models\Product;
 use App\Repositories\UserRepository;
 use App\Services\ProductService;
 use App\Services\UserAddressService;
@@ -24,6 +25,17 @@ class CheckoutController extends Controller
         return view('checkout', [
             'user' => $user,
             'groupedCarts' => $carts,
+            'addresses' => $user->addresses,
+            'mainAddress' => $this->userAddressService->getMainAddress()
+        ]);
+    }
+    public function buyNow(Request $request)
+    {
+        $user = $this->user->getUser();
+        return view('buy-now', [
+            'user' => $user,
+            'product' =>Product::find($request->product_id),
+            'quantity'=>$request->quantity,
             'addresses' => $user->addresses,
             'mainAddress' => $this->userAddressService->getMainAddress()
         ]);
